@@ -4,7 +4,7 @@ import { getNetwork } from '@ethersproject/networks'
 import { getDefaultProvider } from '@ethersproject/providers'
 import { ChainId } from '../constants'
 
-export abstract class Query {
+export class Query {
 
     /**
      * Get holding amounts
