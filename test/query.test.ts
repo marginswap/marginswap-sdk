@@ -1,11 +1,13 @@
 import { ChainId, Token, Query } from '../src'
 
 describe('Query', () => {
-    const USDC = new Token(ChainId.MAINNET, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 18, 'USDC', 'USD Coin')
+    const ADDRESS_ONE = '0x0000000000000000000000000000000000000001'
+
+    const USDC = new Token(ChainId.ROPSTEN, ADDRESS_ONE, 18, 'USDC', 'USD Coin')
 
     describe('#getHoldingAmounts', () => {
         it('returns the holding amounts', () => {
-            return Query.getHoldingAmounts(ChainId.MAINNET, USDC.address).then(data => {
+            return Query.getHoldingAmounts(ChainId.ROPSTEN, USDC.address).then(data => {
                 expect(data).toEqual('1')
             })
         })
