@@ -26,6 +26,7 @@
     "big.js": "^5.2.2",
     "decimal.js-light": "^2.5.0",
     "jsbi": "^3.1.1",
+    "lodash": "^4.17.20",
     "marginswap-core": "github:marginswap/marginswap-core",
     "tiny-invariant": "^1.1.0",
     "tiny-warning": "^1.0.3",
@@ -46,6 +47,7 @@
     "@ethersproject/solidity": "^5.0.2",
     "@types/big.js": "^4.0.5",
     "@types/jest": "^24.0.25",
+    "@types/lodash": "^4.14.168",
     "babel-plugin-transform-jsbi-to-bigint": "^1.3.1",
     "tsdx": "^0.12.3"
   },
