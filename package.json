@@ -27,7 +27,7 @@
     "decimal.js-light": "^2.5.0",
     "jsbi": "^3.1.1",
     "lodash": "^4.17.20",
-    "marginswap-core": "github:marginswap/marginswap-core",
+    "marginswap-core": "github:marginswap/marginswap-core#vr-cross",
     "tiny-invariant": "^1.1.0",
     "tiny-warning": "^1.0.3",
     "toformat": "^2.0.0"

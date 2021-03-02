@@ -1208,10 +1208,15 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
-"@openzeppelin/contracts@3.3.0":
-  version "3.3.0"
-  resolved "https://registry.npmjs.org/@openzeppelin/contracts/-/contracts-3.3.0.tgz"
-  integrity sha512-AemZEsQYtUp1WRkcmZm1div5ORfTpLquLaziCIrSagjxyKdmObxuaY1yjQ5SHFMctR8rLwp706NXTbiIRJg7pw==
+"@nomiclabs/hardhat-ethers@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@nomiclabs/hardhat-ethers/-/hardhat-ethers-2.0.1.tgz#f86a6fa210dbe6270adffccc75e93ed60a856904"
+  integrity sha512-uTFHDhhvJ+UjfvvMeQxD3ZALuzuI3FXzTYT1Z5N3ebyZL5z4Ogwt55GB0R9tdKY0p5HhDhBjU/gsCjUEwIVoaw==
+
+"@openzeppelin/contracts@^4.0.0-beta.0":
+  version "4.0.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.0.0-beta.0.tgz#e16c9f5f667b05e5bf86ecbf32ed92f145a7c890"
+  integrity sha512-O/LC1F04y6PiXuU6oDRmNUIlVwoEC9mS8Lmij6nRt4N1em0fLvirK33QiDc5IgheRZQ7QJ3pyPNCRhNiZNKfLQ==
 
 "@rollup/plugin-commonjs@^11.0.0":
   version "11.1.0"
@@ -5779,11 +5784,12 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-"marginswap-core@github:marginswap/marginswap-core":
+"marginswap-core@github:marginswap/marginswap-core#vr-cross":
   version "1.0.0"
-  resolved "git+ssh://git@github.com/marginswap/marginswap-core.git#99c388d45df2296b38bad39f329362aa79861cac"
+  resolved "git+ssh://git@github.com/marginswap/marginswap-core.git#1ab489459c39578562a5b5256765575fb6133969"
   dependencies:
-    "@openzeppelin/contracts" "3.3.0"
+    "@nomiclabs/hardhat-ethers" "^2.0.1"
+    "@openzeppelin/contracts" "^4.0.0-beta.0"
     "@truffle/hdwallet-provider" "1.2.1"
     "@uniswap/v2-core" "^1.0.1"
 
