@@ -1,5 +1,5 @@
 import { Contract } from '@ethersproject/contracts'
-import MarginTrader from "marginswap-core/build/contracts/MarginTrading.json"
+import CrossMarginTrading from "marginswap-core/artifacts/contracts/CrossMarginTrading.sol/CrossMarginTrading.json"
 import { getNetwork } from '@ethersproject/networks'
 import { getDefaultProvider } from '@ethersproject/providers'
 import { ChainId } from '../constants'
@@ -22,7 +22,7 @@ export class Query {
         chainId = ChainId.MAINNET,
         provider = getDefaultProvider(getNetwork(chainId))
     ): Promise<balances> {
-        const marginTrader = new Contract(address, MarginTrader.abi, provider);
+        const marginTrader = new Contract(address, CrossMarginTrading.abi, provider);
         return marginTrader.functions.getHoldingAmounts(address)
             .then(([tokens, amounts]: [string[], number[]]) => _.zipObject(tokens, amounts));
     }
@@ -38,7 +38,7 @@ export class Query {
         chainId = ChainId.MAINNET,
         provider = getDefaultProvider(getNetwork(chainId))
     ): Promise<balances> {
-        const marginTrader = new Contract(address, MarginTrader.abi, provider);
+        const marginTrader = new Contract(address, CrossMarginTrading.abi, provider);
         return marginTrader.functions.getBorrowAmounts(address)
             .then(([tokens, amounts]: [string[], number[]]) => _.zipObject(tokens, amounts));
     }

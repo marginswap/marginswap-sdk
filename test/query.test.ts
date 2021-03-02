@@ -8,7 +8,7 @@ describe('Query', () => {
 
     describe('#getHoldingAmounts', () => {
         it('returns empty holding amounts for nonexistent account', () => {
-            const provider = getDefaultProvider("http://localhost");
+            const provider = getDefaultProvider("http://localhost:8545");
             return Query.getHoldingAmounts(ADDRESS_ONE, -1, provider).then(data => {
                 expect(data).toEqual([[], []]);
             });
