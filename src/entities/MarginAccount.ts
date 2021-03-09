@@ -9,7 +9,7 @@ type token = string;
 type amount = number;
 type balances = Record<token, amount>;
 
-export class Query {
+export class MarginAccount {
 
     /**
      * Get holding amounts

@@ -3,6 +3,6 @@ export * from './pair'
 export * from './route'
 export * from './trade'
 export * from './currency'
-export * from './query'
+export * from './MarginAccount'
 
 export * from './fractions'
