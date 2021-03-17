@@ -1,9 +1,5 @@
 import { Contract } from '@ethersproject/contracts'
-<<<<<<< HEAD
 import CrossMarginTrading from "marginswap-abi/contracts/CrossMarginTrading.sol/CrossMarginTrading.json"
-=======
-import CrossMarginTrading from "marginswap-core/contracts/CrossMarginTrading.sol/CrossMarginTrading.json"
->>>>>>> 316a0b68aa56b9c41ca79466762123581e0c60f6
 import { getNetwork } from '@ethersproject/networks'
 import { getDefaultProvider } from '@ethersproject/providers'
 import { ChainId } from '../constants'
