@@ -1,13 +1,20 @@
 import { Contract } from '@ethersproject/contracts'
 import CrossMarginTrading from "marginswap-abi/contracts/CrossMarginTrading.sol/CrossMarginTrading.json"
+import * as addresses from "marginswap-abi/addresses.json";
 import { getNetwork } from '@ethersproject/networks'
-import { getDefaultProvider } from '@ethersproject/providers'
+import { BaseProvider, getDefaultProvider } from '@ethersproject/providers'
 import { ChainId } from '../constants'
 import * as _ from "lodash";
 
 type token = string;
 type amount = number;
 type balances = Record<token, amount>;
+
+
+function getCrossMarginTrading(chainId: ChainId, provider:BaseProvider) {
+    const networkName = getNetwork(chainId).name;
+    return new Contract((<any>addresses)[networkName].CrossMarginTrading, CrossMarginTrading.abi, provider);
+}
 
 export class MarginAccount {
 
@@ -22,7 +29,7 @@ export class MarginAccount {
         chainId = ChainId.MAINNET,
         provider = getDefaultProvider(getNetwork(chainId))
     ): Promise<balances> {
-        const marginTrader = new Contract(address, CrossMarginTrading.abi, provider);
+        const marginTrader = getCrossMarginTrading(chainId, provider);
         return marginTrader.functions.getHoldingAmounts(address)
             .then(([tokens, amounts]: [string[], number[]]) => _.zipObject(tokens, amounts));
     }
@@ -38,7 +45,7 @@ export class MarginAccount {
         chainId = ChainId.MAINNET,
         provider = getDefaultProvider(getNetwork(chainId))
     ): Promise<balances> {
-        const marginTrader = new Contract(address, CrossMarginTrading.abi, provider);
+        const marginTrader = getCrossMarginTrading(chainId, provider);
         return marginTrader.functions.getBorrowAmounts(address)
             .then(([tokens, amounts]: [string[], number[]]) => _.zipObject(tokens, amounts));
     }
