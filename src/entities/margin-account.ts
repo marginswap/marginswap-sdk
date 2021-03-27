@@ -7,8 +7,9 @@ import { ChainId } from '../constants';
 import * as _ from "lodash";
 
 type token = string;
+// TODO these are big numbers
 type amount = number;
-type balances = Record<token, amount>;
+export type Balances = Record<token, amount>;
 
 
 function getCrossMarginTrading(chainId: ChainId, provider: BaseProvider) {
@@ -26,7 +27,7 @@ export async function getHoldingAmounts(
   address: string,
   chainId = ChainId.MAINNET,
   provider = getDefaultProvider(getNetwork(chainId))
-): Promise<balances> {
+): Promise<Balances> {
   const marginTrader = getCrossMarginTrading(chainId, provider);
   return marginTrader.functions.getHoldingAmounts(address)
     .then(([tokens, amounts]: [string[], number[]]) => _.zipObject(tokens, amounts));
@@ -42,7 +43,7 @@ export async function getBorrowAmounts(
   address: string,
   chainId = ChainId.MAINNET,
   provider = getDefaultProvider(getNetwork(chainId))
-): Promise<balances> {
+): Promise<Balances> {
   const marginTrader = getCrossMarginTrading(chainId, provider);
   return marginTrader.functions.getBorrowAmounts(address)
     .then(([tokens, amounts]: [string[], number[]]) => _.zipObject(tokens, amounts));
@@ -56,9 +57,37 @@ export async function getAccountBalances(
   const holdingAmounts = getHoldingAmounts(traderAddress, chainId, provider);
   const borrowAmounts = getBorrowAmounts(traderAddress, chainId, provider);
   return Promise.all([holdingAmounts, borrowAmounts]).then(
-    ([holdingAmounts, borrowingAmounts]: [balances, balances]) => {
+    ([holdingAmounts, borrowingAmounts]: [Balances, Balances]) => {
       return { holdingAmounts, borrowingAmounts };
     }
   );
 }
 
+export async function getAccountHoldidngTotal(
+  traderAddress: string,
+  chainId = ChainId.MAINNET,
+  provider = getDefaultProvider(getNetwork(chainId))
+): Promise<amount> {
+  const marginTrader = getCrossMarginTrading(chainId, provider);
+  return await marginTrader.functions.viewHoldingsInPeg(traderAddress);
+}
+
+
+export async function getAccountBorrowTotal(
+  traderAddress: string,
+  chainId = ChainId.MAINNET,
+  provider = getDefaultProvider(getNetwork(chainId))
+): Promise<amount> {
+  const marginTrader = getCrossMarginTrading(chainId, provider);
+  return await marginTrader.functions.viewLoanInPeg(traderAddress);
+}
+
+export async function getAccountRisk(
+  traderAddress: string,
+  chainId = ChainId.MAINNET,
+  provider = getDefaultProvider(getNetwork(chainId))
+): Promise<amount> {
+  // TODO big number division
+  return (await getAccountHoldidngTotal(traderAddress, chainId, provider))
+   / (await getAccountBorrowTotal(traderAddress, chainId, provider));
+}
