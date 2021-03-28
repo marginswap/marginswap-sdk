@@ -4564,7 +4564,7 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-"marginswap-abi@github:marginswap/abi":
+"marginswap-abi@github:marginswap/abi#31d650f":
   version "0.0.0"
   resolved "https://codeload.github.com/marginswap/abi/tar.gz/31d650fdf9a461bef54eec7aa11e500a722763b7"
 
