@@ -1267,6 +1267,11 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
+"@marginswap/core-abi@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@marginswap/core-abi/-/core-abi-1.0.1.tgz#515c69e97df6895c0373321c6f2114d8a589183e"
+  integrity sha512-P1hFPaL0KW696htTVbzcOrpHFKQl59ePRB2XzVH9iaV1/X+QU+OFfcpVXaEmOAhTSqI66Ps3GBkxG4GdYrbDEw==
+
 "@rollup/plugin-commonjs@^11.0.0":
   version "11.1.0"
   resolved "https://registry.yarnpkg.com/@rollup/plugin-commonjs/-/plugin-commonjs-11.1.0.tgz#60636c7a722f54b41e419e1709df05c7234557ef"
@@ -4563,10 +4568,6 @@ map-visit@^1.0.0:
   integrity sha1-7Nyo8TFE5mDxtb1B8S80edmN+48=
   dependencies:
     object-visit "^1.0.0"
-
-"marginswap-abi@github:marginswap/abi#31d650f":
-  version "0.0.0"
-  resolved "https://codeload.github.com/marginswap/abi/tar.gz/31d650fdf9a461bef54eec7aa11e500a722763b7"
 
 merge-stream@^2.0.0:
   version "2.0.0"

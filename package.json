@@ -1,7 +1,7 @@
 {
   "name": "@marginswap/sdk",
   "license": "MIT",
-  "version": "4.0.5",
+  "version": "4.0.6",
   "description": "🛠 An SDK for building applications on top of marginswap.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -28,7 +28,7 @@
     "jsbi": "^3.1.1",
     "lodash": "^4.17.20",
     "lodash-es": "^4.17.21",
-    "marginswap-abi": "github:marginswap/abi#31d650f",
+    "@marginswap/core-abi": "1.0.1",
     "tiny-invariant": "^1.1.0",
     "tiny-warning": "^1.0.3",
     "toformat": "^2.0.0"
