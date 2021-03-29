@@ -1,6 +1,6 @@
 import { Contract } from '@ethersproject/contracts';
 import CrossMarginTrading from "@marginswap/core-abi/artifacts/contracts/CrossMarginTrading.sol/CrossMarginTrading.json";
-import * as addresses from "@marginswap/core-abi/addresses.json";
+import addresses from "@marginswap/core-abi/addresses.json";
 import { getNetwork } from '@ethersproject/networks';
 import { BaseProvider, getDefaultProvider } from '@ethersproject/providers';
 import { ChainId } from '../constants';
