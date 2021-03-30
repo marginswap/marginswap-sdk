@@ -1,5 +1,6 @@
 import { Contract } from '@ethersproject/contracts';
 import CrossMarginTrading from "@marginswap/core-abi/artifacts/contracts/CrossMarginTrading.sol/CrossMarginTrading.json";
+import CrossMarginAccounts from "@marginswap/core-abi/artifacts/contracts/CrossMarginAccounts.sol/CrossMarginAccounts.json";
 import addresses from "@marginswap/core-abi/addresses.json";
 import { getNetwork } from '@ethersproject/networks';
 import { BaseProvider, getDefaultProvider } from '@ethersproject/providers';
@@ -15,6 +16,11 @@ export type Balances = Record<token, amount>;
 function getCrossMarginTrading(chainId: ChainId, provider: BaseProvider) {
   const networkName = getNetwork(chainId).name;
   return new Contract((addresses as any)[networkName].CrossMarginTrading, CrossMarginTrading.abi, provider);
+}
+
+function getCrossMarginAccounts(chainId: ChainId, provider: BaseProvider) {
+  const networkName = getNetwork(chainId).name;
+  return new Contract((addresses as any)[networkName].CrossMarginAccounts, CrossMarginAccounts.abi, provider);
 }
 
 /**
@@ -68,7 +74,7 @@ export async function getAccountHoldingTotal(
   chainId = ChainId.MAINNET,
   provider = getDefaultProvider(getNetwork(chainId))
 ): Promise<amount> {
-  const marginTrader = getCrossMarginTrading(chainId, provider);
+  const marginTrader = getCrossMarginAccounts(chainId, provider);
   return await marginTrader.viewHoldingsInPeg(traderAddress);
 }
 
@@ -78,7 +84,7 @@ export async function getAccountBorrowTotal(
   chainId = ChainId.MAINNET,
   provider = getDefaultProvider(getNetwork(chainId))
 ): Promise<amount> {
-  const marginTrader = getCrossMarginTrading(chainId, provider);
+  const marginTrader = getCrossMarginAccounts(chainId, provider);
   return await marginTrader.viewLoanInPeg(traderAddress);
 }
 
