@@ -20,7 +20,7 @@ function getCrossMarginTrading(chainId: ChainId, provider: BaseProvider) {
 
 function getCrossMarginAccounts(chainId: ChainId, provider: BaseProvider) {
   const networkName = getNetwork(chainId).name;
-  return new Contract((addresses as any)[networkName].CrossMarginAccounts, CrossMarginAccounts.abi, provider);
+  return new Contract((addresses as any)[networkName].CrossMarginTrading, CrossMarginAccounts.abi, provider);
 }
 
 /**
