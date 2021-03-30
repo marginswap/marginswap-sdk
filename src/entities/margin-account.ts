@@ -63,7 +63,7 @@ export async function getAccountBalances(
   );
 }
 
-export async function getAccountHoldidngTotal(
+export async function getAccountHoldingTotal(
   traderAddress: string,
   chainId = ChainId.MAINNET,
   provider = getDefaultProvider(getNetwork(chainId))
@@ -88,6 +88,6 @@ export async function getAccountRisk(
   provider = getDefaultProvider(getNetwork(chainId))
 ): Promise<amount> {
   // TODO big number division
-  return (await getAccountHoldidngTotal(traderAddress, chainId, provider))
+  return (await getAccountHoldingTotal(traderAddress, chainId, provider))
    / (await getAccountBorrowTotal(traderAddress, chainId, provider));
 }
