@@ -29,7 +29,7 @@ export async function getHoldingAmounts(
   provider = getDefaultProvider(getNetwork(chainId))
 ): Promise<Balances> {
   const marginTrader = getCrossMarginTrading(chainId, provider);
-  return marginTrader.functions.getHoldingAmounts(address)
+  return marginTrader.getHoldingAmounts(address)
     .then(([tokens, amounts]: [string[], number[]]) => _.zipObject(tokens, amounts));
 }
 
@@ -45,7 +45,7 @@ export async function getBorrowAmounts(
   provider = getDefaultProvider(getNetwork(chainId))
 ): Promise<Balances> {
   const marginTrader = getCrossMarginTrading(chainId, provider);
-  return marginTrader.functions.getBorrowAmounts(address)
+  return marginTrader.getBorrowAmounts(address)
     .then(([tokens, amounts]: [string[], number[]]) => _.zipObject(tokens, amounts));
 }
 
@@ -69,7 +69,7 @@ export async function getAccountHoldidngTotal(
   provider = getDefaultProvider(getNetwork(chainId))
 ): Promise<amount> {
   const marginTrader = getCrossMarginTrading(chainId, provider);
-  return await marginTrader.functions.viewHoldingsInPeg(traderAddress);
+  return await marginTrader.viewHoldingsInPeg(traderAddress);
 }
 
 
@@ -79,7 +79,7 @@ export async function getAccountBorrowTotal(
   provider = getDefaultProvider(getNetwork(chainId))
 ): Promise<amount> {
   const marginTrader = getCrossMarginTrading(chainId, provider);
-  return await marginTrader.functions.viewLoanInPeg(traderAddress);
+  return await marginTrader.viewLoanInPeg(traderAddress);
 }
 
 export async function getAccountRisk(
