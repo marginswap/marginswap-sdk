@@ -12,8 +12,8 @@ type amount = number;
 export type Balances = Record<token, amount>;
 
 
-function getCrossMarginTrading(chainId: ChainId, provider: BaseProvider) {
-  const networkName = getNetwork(chainId).name;
+function getCrossMarginTrading(_chainId: any, provider: BaseProvider) {
+  const networkName = getNetwork("http://localhost:8545").name;
   return new Contract((addresses as any)[networkName].CrossMarginTrading, CrossMarginTrading.abi, provider);
 }
 
@@ -65,17 +65,18 @@ export async function getAccountBalances(
 
 export async function getAccountHoldingTotal(
   traderAddress: string,
-  chainId = ChainId.MAINNET,
+  chainId = "http://localhost:8545",
   provider = getDefaultProvider(getNetwork(chainId))
 ): Promise<amount> {
-  const marginTrader = getCrossMarginTrading(chainId, provider);
+  const marginTrader = getCrossMarginTrading(777, provider);
   return await marginTrader.viewHoldingsInPeg(traderAddress);
 }
 
 
 export async function getAccountBorrowTotal(
   traderAddress: string,
-  chainId = ChainId.MAINNET,
+  // chainId = ChainId.MAINNET,
+  chainId = "http://localhost:8545",
   provider = getDefaultProvider(getNetwork(chainId))
 ): Promise<amount> {
   const marginTrader = getCrossMarginTrading(chainId, provider);
@@ -84,10 +85,11 @@ export async function getAccountBorrowTotal(
 
 export async function getAccountRisk(
   traderAddress: string,
-  chainId = ChainId.MAINNET,
+  // chainId = ChainId.MAINNET,
+  chainId = "http://localhost:8545",
   provider = getDefaultProvider(getNetwork(chainId))
 ): Promise<amount> {
   // TODO big number division
   return (await getAccountHoldingTotal(traderAddress, chainId, provider))
-   / (await getAccountBorrowTotal(traderAddress, chainId, provider));
+    / (await getAccountBorrowTotal(traderAddress, chainId, provider));
 }
