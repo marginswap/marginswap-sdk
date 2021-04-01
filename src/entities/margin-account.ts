@@ -1,5 +1,7 @@
 import { Contract } from '@ethersproject/contracts';
 import CrossMarginTrading from "@marginswap/core-abi/artifacts/contracts/CrossMarginTrading.sol/CrossMarginTrading.json";
+import Admin from "@marginswap/core-abi/artifacts/contracts/Admin.sol/Admin.json";
+import LiquidityMiningReward from "@marginswap/core-abi/artifacts/contracts/LiquidityMiningReward.sol/LiquidityMiningReward.json";
 import addresses from "@marginswap/core-abi/addresses.json";
 import { getNetwork } from '@ethersproject/networks';
 import { BaseProvider, getDefaultProvider } from '@ethersproject/providers';
@@ -89,5 +91,17 @@ export async function getAccountRisk(
 ): Promise<amount> {
   // TODO big number division
   return (await getAccountHoldingTotal(traderAddress, chainId, provider))
-   / (await getAccountBorrowTotal(traderAddress, chainId, provider));
+    / (await getAccountBorrowTotal(traderAddress, chainId, provider));
+}
+
+export async function getLiquidityStakeAmount(
+  traderAdress: string
+): Promise<number> {
+  return LiquidityMiningReward.viewStakeAmount(traderAdress);
+}
+
+export async function getMaintenanceStakeAmount(
+  traderAdress: string
+): Promise<number> {
+  return Admin.viewMaintenanceStakeAmount(traderAdress);
 }
