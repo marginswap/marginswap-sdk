@@ -95,13 +95,19 @@ export async function getAccountRisk(
 }
 
 export async function getLiquidityStakeAmount(
-  traderAdress: string
+  traderAdress: string,
+  provider = getDefaultProvider(getNetwork(ChainId.MAINNET))
 ): Promise<number> {
-  return LiquidityMiningReward.viewStakeAmount(traderAdress);
+  const networkName = await provider.getNetwork().then(network => network.name);
+  const liquidityMiningReward = new Contract((addresses as any)[networkName].LiquidityMiningReward, LiquidityMiningReward.abi, provider);
+  return liquidityMiningReward.stakeAmounts(traderAdress);
 }
 
 export async function getMaintenanceStakeAmount(
-  traderAdress: string
+  traderAdress: string,
+  provider = getDefaultProvider(getNetwork(ChainId.MAINNET))
 ): Promise<number> {
-  return Admin.viewMaintenanceStakeAmount(traderAdress);
+  const networkName = await provider.getNetwork().then(network => network.name);
+  const admin = new Contract((addresses as any)[networkName].Admin, Admin.abi, provider);
+  return admin.stakes(traderAdress);
 }
