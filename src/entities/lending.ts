@@ -1,10 +1,10 @@
 import { Contract } from '@ethersproject/contracts';
-import LendingCore from "marginswap-abi/contracts/Lending.sol/Lending.json";
+import LendingCore from "@marginswap/core-abi/artifacts/contracts/Lending.sol/Lending.json";
 import { getNetwork } from '@ethersproject/networks';
 import { BaseProvider, getDefaultProvider } from '@ethersproject/providers';
 import { ChainId } from '../constants';
 import * as _ from "lodash";
-import * as addresses from "marginswap-abi/addresses.json";
+import * as addresses from "@marginswap/core-abi/addresses.json";
 
 type token = string;
 type amount = number;
@@ -31,3 +31,9 @@ export async function getHourlyBondBalances(
     const requests = activeTokens.map(token => lending.viewHourlyBondAmount(token, lenderAddress));
     return Promise.all(requests).then(balances => _.zipObject(activeTokens, balances));
 }
+
+/**
+ * Get current interest rate for hourly bonds
+ */
+
+// TODO call viewHourlyBondAPRPer10k in Lending
