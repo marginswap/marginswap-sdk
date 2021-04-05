@@ -14,7 +14,7 @@
   ],
   "module": "dist/sdk.esm.js",
   "scripts": {
-    "lint": "tsdx lint src test",
+    "lint": "eslint --ext .ts --fix src/",
     "build": "tsdx build",
     "start": "tsdx watch",
     "test": "tsdx test",
@@ -22,34 +22,35 @@
     "prepare": "tsdx build"
   },
   "dependencies": {
+    "@ethersproject/address": "^5.1.0",
+    "@ethersproject/bignumber": "^5.1.0",
+    "@ethersproject/contracts": "^5.1.0",
+    "@ethersproject/networks": "^5.1.0",
+    "@ethersproject/providers": "^5.1.0",
+    "@ethersproject/solidity": "^5.1.0",
+    "@marginswap/core-abi": "1.0.7",
     "@uniswap/v2-core": "^1.0.0",
     "big.js": "^5.2.2",
     "decimal.js-light": "^2.5.0",
     "jsbi": "^3.1.1",
     "lodash": "^4.17.20",
     "lodash-es": "^4.17.21",
-    "@marginswap/core-abi": "1.0.7",
     "tiny-invariant": "^1.1.0",
     "tiny-warning": "^1.0.3",
     "toformat": "^2.0.0"
   },
-  "peerDependencies": {
-    "@ethersproject/address": "^5.0.0-beta",
-    "@ethersproject/contracts": "^5.0.0-beta",
-    "@ethersproject/networks": "^5.0.0-beta",
-    "@ethersproject/providers": "^5.0.0-beta",
-    "@ethersproject/solidity": "^5.0.0-beta"
-  },
   "devDependencies": {
-    "@ethersproject/address": "^5.0.2",
-    "@ethersproject/contracts": "^5.0.2",
-    "@ethersproject/networks": "^5.0.2",
-    "@ethersproject/providers": "^5.0.5",
-    "@ethersproject/solidity": "^5.0.2",
     "@types/big.js": "^4.0.5",
     "@types/jest": "^24.0.25",
     "@types/lodash": "^4.14.168",
+    "@typescript-eslint/eslint-plugin": "^4.20.0",
+    "@typescript-eslint/parser": "^4.20.0",
     "babel-plugin-transform-jsbi-to-bigint": "^1.3.1",
+    "eslint": "^7.23.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-prettier": "^3.3.1",
+    "prettier": "^2.2.1",
     "tsdx": "^0.12.3"
   },
   "engines": {
