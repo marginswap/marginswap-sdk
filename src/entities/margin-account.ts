@@ -1,21 +1,21 @@
 import { Contract } from '@ethersproject/contracts';
-import CrossMarginTrading from "@marginswap/core-abi/artifacts/contracts/CrossMarginTrading.sol/CrossMarginTrading.json";
-import Admin from "@marginswap/core-abi/artifacts/contracts/Admin.sol/Admin.json";
-import LiquidityMiningReward from "@marginswap/core-abi/artifacts/contracts/LiquidityMiningReward.sol/LiquidityMiningReward.json";
-import addresses from "@marginswap/core-abi/addresses.json";
+import CrossMarginTrading from '@marginswap/core-abi/artifacts/contracts/CrossMarginTrading.sol/CrossMarginTrading.json';
+import Admin from '@marginswap/core-abi/artifacts/contracts/Admin.sol/Admin.json';
+import LiquidityMiningReward from '@marginswap/core-abi/artifacts/contracts/LiquidityMiningReward.sol/LiquidityMiningReward.json';
+import addresses from '@marginswap/core-abi/addresses.json';
 import { getNetwork } from '@ethersproject/networks';
 import { BaseProvider, getDefaultProvider } from '@ethersproject/providers';
 import { ChainId } from '../constants';
-import * as _ from "lodash";
-import {BigNumber} from "@ethersproject/bignumber";
+import * as _ from 'lodash';
+import { BigNumber } from '@ethersproject/bignumber';
 
 type token = string;
 type amount = BigNumber;
 export type Balances = Record<token, amount>;
 
-
 function getCrossMarginTrading(chainId: ChainId, provider: BaseProvider) {
   const networkName = getNetwork(chainId).name;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return new Contract((addresses as any)[networkName].CrossMarginTrading, CrossMarginTrading.abi, provider);
 }
 
@@ -31,7 +31,8 @@ export async function getHoldingAmounts(
   provider = getDefaultProvider(getNetwork(chainId))
 ): Promise<Balances> {
   const marginTrader = getCrossMarginTrading(chainId, provider);
-  return marginTrader.getHoldingAmounts(address)
+  return marginTrader
+    .getHoldingAmounts(address)
     .then(([tokens, amounts]: [string[], number[]]) => _.zipObject(tokens, amounts));
 }
 
@@ -47,7 +48,8 @@ export async function getBorrowAmounts(
   provider = getDefaultProvider(getNetwork(chainId))
 ): Promise<Balances> {
   const marginTrader = getCrossMarginTrading(chainId, provider);
-  return marginTrader.getBorrowAmounts(address)
+  return marginTrader
+    .getBorrowAmounts(address)
     .then(([tokens, amounts]: [string[], number[]]) => _.zipObject(tokens, amounts));
 }
 
@@ -55,7 +57,7 @@ export async function getAccountBalances(
   traderAddress: string,
   chainId = ChainId.MAINNET,
   provider = getDefaultProvider(getNetwork(chainId))
-) {
+): Promise<{ holdingAmounts: Balances; borrowingAmounts: Balances }> {
   const holdingAmounts = getHoldingAmounts(traderAddress, chainId, provider);
   const borrowAmounts = getBorrowAmounts(traderAddress, chainId, provider);
   return Promise.all([holdingAmounts, borrowAmounts]).then(
@@ -74,7 +76,6 @@ export async function getAccountHoldingTotal(
   return await marginTrader.viewHoldingsInPeg(traderAddress);
 }
 
-
 export async function getAccountBorrowTotal(
   traderAddress: string,
   chainId = ChainId.MAINNET,
@@ -89,7 +90,12 @@ export async function getLiquidityStakeAmount(
   provider = getDefaultProvider(getNetwork(ChainId.MAINNET))
 ): Promise<number> {
   const networkName = await provider.getNetwork().then(network => network.name);
-  const liquidityMiningReward = new Contract((addresses as any)[networkName].LiquidityMiningReward, LiquidityMiningReward.abi, provider);
+  const liquidityMiningReward = new Contract(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (addresses as any)[networkName].LiquidityMiningReward,
+    LiquidityMiningReward.abi,
+    provider
+  );
   return liquidityMiningReward.stakeAmounts(traderAdress);
 }
 
@@ -98,6 +104,7 @@ export async function getMaintenanceStakeAmount(
   provider = getDefaultProvider(getNetwork(ChainId.MAINNET))
 ): Promise<number> {
   const networkName = await provider.getNetwork().then(network => network.name);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const admin = new Contract((addresses as any)[networkName].Admin, Admin.abi, provider);
   return admin.stakes(traderAdress);
 }

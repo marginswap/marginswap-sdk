@@ -1,5 +1,5 @@
-import JSBI from 'jsbi'
-export { JSBI }
+import JSBI from 'jsbi';
+export { JSBI };
 
 export {
   BigintIsh,
@@ -9,9 +9,9 @@ export {
   FACTORY_ADDRESS,
   INIT_CODE_HASH,
   MINIMUM_LIQUIDITY
-} from './constants'
+} from './constants';
 
-export * from './errors'
-export * from './entities'
-export * from './router'
-export * from './fetcher'
+export * from './errors';
+export * from './entities';
+export * from './router';
+export * from './fetcher';
