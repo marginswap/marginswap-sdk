@@ -7,10 +7,10 @@ import { getNetwork } from '@ethersproject/networks';
 import { BaseProvider, getDefaultProvider } from '@ethersproject/providers';
 import { ChainId } from '../constants';
 import * as _ from "lodash";
+import {BigNumber} from "@ethersproject/bignumber";
 
 type token = string;
-// TODO these are big numbers
-type amount = number;
+type amount = BigNumber;
 export type Balances = Record<token, amount>;
 
 
@@ -82,16 +82,6 @@ export async function getAccountBorrowTotal(
 ): Promise<amount> {
   const marginTrader = getCrossMarginTrading(chainId, provider);
   return await marginTrader.viewLoanInPeg(traderAddress);
-}
-
-export async function getAccountRisk(
-  traderAddress: string,
-  chainId = ChainId.MAINNET,
-  provider = getDefaultProvider(getNetwork(chainId))
-): Promise<amount> {
-  // TODO big number division
-  return (await getAccountHoldingTotal(traderAddress, chainId, provider))
-    / (await getAccountBorrowTotal(traderAddress, chainId, provider));
 }
 
 export async function getLiquidityStakeAmount(
