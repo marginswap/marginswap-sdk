@@ -2,6 +2,7 @@ import { Contract } from '@ethersproject/contracts';
 import CrossMarginTrading from "@marginswap/core-abi/artifacts/contracts/CrossMarginTrading.sol/CrossMarginTrading.json";
 import Admin from "@marginswap/core-abi/artifacts/contracts/Admin.sol/Admin.json";
 import LiquidityMiningReward from "@marginswap/core-abi/artifacts/contracts/LiquidityMiningReward.sol/LiquidityMiningReward.json";
+import MarginRouter from "@marginswap/core-abi/artifacts/contracts/MarginRouter.sol/MarginRouter.json";
 import addresses from "@marginswap/core-abi/addresses.json";
 import { getNetwork } from '@ethersproject/networks';
 import { BaseProvider, getDefaultProvider } from '@ethersproject/providers';
@@ -110,4 +111,16 @@ export async function getMaintenanceStakeAmount(
   const networkName = await provider.getNetwork().then(network => network.name);
   const admin = new Contract((addresses as any)[networkName].Admin, Admin.abi, provider);
   return admin.stakes(traderAdress);
+}
+
+export async function crossDeposit(
+  tokenAddress: string,
+  amount: string,
+  chainId = ChainId.MAINNET,
+  library: any
+): Promise<number> {
+  const defaultProvider = getDefaultProvider(getNetwork(chainId));
+  const networkName = await defaultProvider.getNetwork().then(network => network.name);
+  const marginRouter = new Contract((addresses as any)[networkName].MarginRouter, MarginRouter.abi, library);
+  return await marginRouter.crossDeposit(tokenAddress, amount);
 }
