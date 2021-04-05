@@ -14,13 +14,14 @@ function getLending(chainId:ChainId, provider:BaseProvider) {
 
 /**
  * Get hourly bond amounts
+ * @param lenderAddress address of the lender on the chain
+ * @param activeTokens addresses of the issuers on the chain
  * @param chainId chain of the token
- * @param address address of the token on the chain
  * @param provider provider used to fetch the token
  */
 export async function getHourlyBondBalances(
     lenderAddress: string,
-    activeTokens:string[],
+    activeTokens: string[],
     chainId = ChainId.MAINNET,
     provider = getDefaultProvider(getNetwork(chainId))
 ): Promise<Balances> {
@@ -31,6 +32,16 @@ export async function getHourlyBondBalances(
 
 /**
  * Get current interest rate for hourly bonds
+ * @param tokens addresses of the issuers on the chain
+ * @param chainId chain of the token
+ * @param provider provider used to fetch the token
  */
-
-// TODO call viewHourlyBondAPRPer10k in Lending
+export async function getHourlyBondInterestRates(
+	tokens: string[],
+	chainId = ChainId.MAINNET,
+	provider = getDefaultProvider(getNetwork(chainId))
+): Promise<Balances> {
+	const lending = getLending(chainId, provider);
+	const requests = tokens.map(token => lending.viewHourlyBondAPRPer10k(token));
+	return Promise.all(requests).then(interestRates => _.zipObject(tokens, interestRates));
+}
