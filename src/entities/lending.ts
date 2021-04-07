@@ -45,3 +45,21 @@ export async function getHourlyBondInterestRates(
   const requests = tokens.map(token => lending.viewHourlyBondAPRPer10k(token));
   return Promise.all(requests).then(interestRates => _.zipObject(tokens, interestRates));
 }
+
+/**
+ * Get hourly bond maturities
+ * @param lenderAddress address of the lender on the chain
+ * @param tokens addresses of the issuers on the chain
+ * @param chainId chain of the token
+ * @param provider provider used to fetch the token
+ */
+export async function getHourlyBondMaturities(
+  lenderAddress: string,
+  tokens: string[],
+  chainId = ChainId.MAINNET,
+  provider = getDefaultProvider(getNetwork(chainId))
+): Promise<Balances> {
+  const lending = getLending(chainId, provider);
+  const bondsData = await Promise.all(tokens.map(token => lending.hourlyBondAccounts(token, lenderAddress)));
+  return bondsData.reduce((acc, cur, index) => ({ ...acc, [tokens[index]]: cur.moduloHour }), {});
+}
