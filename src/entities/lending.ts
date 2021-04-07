@@ -4,13 +4,12 @@ import { getNetwork } from '@ethersproject/networks';
 import { BaseProvider, getDefaultProvider } from '@ethersproject/providers';
 import { ChainId } from '../constants';
 import * as _ from 'lodash';
-import addresses from '@marginswap/core-abi/addresses.json';
+import addresses from '../addresses';
 import { Balances } from './margin-account';
 
 function getLending(chainId: ChainId, provider: BaseProvider) {
   const networkName = getNetwork(chainId).name;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return new Contract((addresses as any)[networkName].Lending, LendingCore.abi, provider);
+  return new Contract(addresses[networkName].Lending, LendingCore.abi, provider);
 }
 
 /**
