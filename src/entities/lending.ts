@@ -1,15 +1,12 @@
 import { Contract } from '@ethersproject/contracts';
 import LendingCore from '@marginswap/core-abi/artifacts/contracts/Lending.sol/Lending.json';
-import { getNetwork } from '@ethersproject/networks';
-import { BaseProvider, getDefaultProvider } from '@ethersproject/providers';
-import { ChainId } from '../constants';
+import { Provider } from '@ethersproject/providers';
 import * as _ from 'lodash';
-import addresses from '../addresses';
+import { getAddresses } from '../addresses';
 import { Balances } from './margin-account';
 
-function getLending(chainId: ChainId, provider: BaseProvider) {
-  const networkName = getNetwork(chainId).name;
-  return new Contract(addresses[networkName].Lending, LendingCore.abi, provider);
+async function getLending(provider: Provider) {
+  return new Contract((await getAddresses(provider)).Lending, LendingCore.abi, provider);
 }
 
 /**
@@ -22,10 +19,9 @@ function getLending(chainId: ChainId, provider: BaseProvider) {
 export async function getHourlyBondBalances(
   lenderAddress: string,
   activeTokens: string[],
-  chainId = ChainId.MAINNET,
-  provider = getDefaultProvider(getNetwork(chainId))
+  provider: Provider
 ): Promise<Balances> {
-  const lending = getLending(chainId, provider);
+  const lending = await getLending(provider);
   const requests = activeTokens.map(token => lending.viewHourlyBondAmount(token, lenderAddress));
   return Promise.all(requests).then(balances => _.zipObject(activeTokens, balances));
 }
@@ -36,12 +32,8 @@ export async function getHourlyBondBalances(
  * @param chainId chain of the token
  * @param provider provider used to fetch the token
  */
-export async function getHourlyBondInterestRates(
-  tokens: string[],
-  chainId = ChainId.MAINNET,
-  provider = getDefaultProvider(getNetwork(chainId))
-): Promise<Balances> {
-  const lending = getLending(chainId, provider);
+export async function getHourlyBondInterestRates(tokens: string[], provider: Provider): Promise<Balances> {
+  const lending = await getLending(provider);
   const requests = tokens.map(token => lending.viewHourlyBondAPRPer10k(token));
   return Promise.all(requests).then(interestRates => _.zipObject(tokens, interestRates));
 }
@@ -56,10 +48,9 @@ export async function getHourlyBondInterestRates(
 export async function getHourlyBondMaturities(
   lenderAddress: string,
   tokens: string[],
-  chainId = ChainId.MAINNET,
-  provider = getDefaultProvider(getNetwork(chainId))
+  provider: Provider
 ): Promise<Balances> {
-  const lending = getLending(chainId, provider);
+  const lending = await getLending(provider);
   const bondsData = await Promise.all(tokens.map(token => lending.hourlyBondAccounts(token, lenderAddress)));
   return bondsData.reduce((acc, cur, index) => ({ ...acc, [tokens[index]]: cur.moduloHour }), {});
 }
