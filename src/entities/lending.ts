@@ -4,13 +4,12 @@ import { getNetwork } from '@ethersproject/networks';
 import { BaseProvider, getDefaultProvider } from '@ethersproject/providers';
 import { ChainId } from '../constants';
 import * as _ from 'lodash';
-import addresses from '@marginswap/core-abi/addresses.json';
+import addresses from '../addresses';
 import { Balances } from './margin-account';
 
 function getLending(chainId: ChainId, provider: BaseProvider) {
   const networkName = getNetwork(chainId).name;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return new Contract((addresses as any)[networkName].Lending, LendingCore.abi, provider);
+  return new Contract(addresses[networkName].Lending, LendingCore.abi, provider);
 }
 
 /**
@@ -45,4 +44,22 @@ export async function getHourlyBondInterestRates(
   const lending = getLending(chainId, provider);
   const requests = tokens.map(token => lending.viewHourlyBondAPRPer10k(token));
   return Promise.all(requests).then(interestRates => _.zipObject(tokens, interestRates));
+}
+
+/**
+ * Get hourly bond maturities
+ * @param lenderAddress address of the lender on the chain
+ * @param tokens addresses of the issuers on the chain
+ * @param chainId chain of the token
+ * @param provider provider used to fetch the token
+ */
+export async function getHourlyBondMaturities(
+  lenderAddress: string,
+  tokens: string[],
+  chainId = ChainId.MAINNET,
+  provider = getDefaultProvider(getNetwork(chainId))
+): Promise<Balances> {
+  const lending = getLending(chainId, provider);
+  const bondsData = await Promise.all(tokens.map(token => lending.hourlyBondAccounts(token, lenderAddress)));
+  return bondsData.reduce((acc, cur, index) => ({ ...acc, [tokens[index]]: cur.moduloHour }), {});
 }

@@ -15,13 +15,15 @@
   "module": "dist/sdk.esm.js",
   "scripts": {
     "lint": "eslint --ext .ts --fix src/",
-    "build": "tsdx build",
+    "build": "tsdx build && cp -R src/abis dist/abis",
     "start": "tsdx watch",
     "test": "tsdx test",
     "prepublishOnly": "tsdx build",
     "prepare": "tsdx build"
   },
   "dependencies": {
+    "@ethersproject/abstract-provider": "^5.1.0",
+    "@ethersproject/abstract-signer": "^5.1.0",
     "@ethersproject/address": "^5.1.0",
     "@ethersproject/bignumber": "^5.1.0",
     "@ethersproject/contracts": "^5.1.0",
