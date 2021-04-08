@@ -5,7 +5,7 @@ import { BaseProvider, getDefaultProvider } from '@ethersproject/providers';
 import { ChainId } from '../constants';
 import * as _ from 'lodash';
 import addresses from '../addresses';
-import { Balances } from './margin-account';
+import { Balances, getCrossMarginTrading } from './margin-account';
 
 function getLending(chainId: ChainId, provider: BaseProvider) {
   const networkName = getNetwork(chainId).name;
@@ -72,4 +72,16 @@ export async function buyHourlyBondSubscription(
 ): Promise<void> {
   const lending = getLending(chainId, provider);
   await lending.buyHourlyBondSubscription(token, amount);
+}
+
+export async function getBondsCostInDollars(
+  lenderAddress: string,
+  tokens: string[],
+  chainId = ChainId.MAINNET,
+  provider = getDefaultProvider(getNetwork(chainId))
+): Promise<Balances> {
+  const balances = await getHourlyBondBalances(lenderAddress, tokens, chainId, provider);
+  const marginTrading = getCrossMarginTrading(chainId, provider);
+  const bondsData = await Promise.all(tokens.map(token => marginTrading.viewCurrentPriceInPeg(token, balances[token])));
+  return _.zipObject(tokens, bondsData);
 }
