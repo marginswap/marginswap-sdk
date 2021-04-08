@@ -16,7 +16,7 @@ type token = string;
 type amount = BigNumber;
 export type Balances = Record<token, amount>;
 
-function getCrossMarginTrading(chainId: ChainId, provider: BaseProvider) {
+export function getCrossMarginTrading(chainId: ChainId, provider: BaseProvider): Contract {
   const networkName = getNetwork(chainId).name;
   return new Contract(addresses[networkName].CrossMarginTrading, CrossMarginTrading.abi, provider);
 }
