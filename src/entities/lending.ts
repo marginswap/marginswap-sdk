@@ -4,12 +4,12 @@ import { getNetwork } from '@ethersproject/networks';
 import { BaseProvider, getDefaultProvider } from '@ethersproject/providers';
 import { ChainId } from '../constants';
 import * as _ from 'lodash';
-import addresses from '../addresses';
+import {getAddresses} from '../addresses';
 import { Balances, getCrossMarginTrading } from './margin-account';
 
 function getLending(chainId: ChainId, provider: BaseProvider) {
   const networkName = getNetwork(chainId).name;
-  return new Contract(addresses[networkName].Lending, LendingCore.abi, provider);
+  return new Contract(getAddresses(chainId).Lending, LendingCore.abi, provider);
 }
 
 /**

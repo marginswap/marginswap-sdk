@@ -5,7 +5,7 @@ import LiquidityMiningReward from '@marginswap/core-abi/artifacts/contracts/Liqu
 import MarginRouter from '@marginswap/core-abi/artifacts/contracts/MarginRouter.sol/MarginRouter.json';
 import { Signer } from '@ethersproject/abstract-signer';
 import { Provider } from '@ethersproject/abstract-provider';
-import addresses from '../addresses';
+import {getAddresses} from '../addresses';
 import { getNetwork } from '@ethersproject/networks';
 import { BaseProvider, getDefaultProvider } from '@ethersproject/providers';
 import { ChainId } from '../constants';
@@ -18,7 +18,7 @@ export type Balances = Record<token, amount>;
 
 export function getCrossMarginTrading(chainId: ChainId, provider: BaseProvider): Contract {
   const networkName = getNetwork(chainId).name;
-  return new Contract(addresses[networkName].CrossMarginTrading, CrossMarginTrading.abi, provider);
+  return new Contract(getAddresses(chainId).CrossMarginTrading, CrossMarginTrading.abi, provider);
 }
 
 /**
@@ -87,29 +87,6 @@ export async function getAccountBorrowTotal(
   return await marginTrader.viewLoanInPeg(traderAddress);
 }
 
-export async function getLiquidityStakeAmount(
-  traderAdress: string,
-  provider = getDefaultProvider(getNetwork(ChainId.MAINNET))
-): Promise<number> {
-  const networkName = await provider.getNetwork().then(network => network.name);
-  const liquidityMiningReward = new Contract(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (addresses as any)[networkName].LiquidityMiningReward,
-    LiquidityMiningReward.abi,
-    provider
-  );
-  return liquidityMiningReward.stakeAmounts(traderAdress);
-}
-
-export async function getMaintenanceStakeAmount(
-  traderAdress: string,
-  provider = getDefaultProvider(getNetwork(ChainId.MAINNET))
-): Promise<number> {
-  const networkName = await provider.getNetwork().then(network => network.name);
-  const admin = new Contract(addresses[networkName].Admin, Admin.abi, provider);
-  return admin.stakes(traderAdress);
-}
-
 export async function crossDeposit(
   tokenAddress: string,
   amount: string,
@@ -118,6 +95,6 @@ export async function crossDeposit(
 ): Promise<number> {
   const defaultProvider = getDefaultProvider(getNetwork(chainId));
   const networkName = await defaultProvider.getNetwork().then(network => network.name);
-  const marginRouter = new Contract(addresses[networkName].MarginRouter, MarginRouter.abi, library);
+  const marginRouter = new Contract(getAddresses(chainId).MarginRouter, MarginRouter.abi, library);
   return await marginRouter.crossDeposit(tokenAddress, amount);
 }

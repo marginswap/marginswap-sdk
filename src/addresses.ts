@@ -1,10 +1,25 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let addresses: any;
+import { ChainId } from "./constants";
 
-if (process.env.REACT_APP_LOCAL_ADDRESSES === 'true') {
-  addresses = require('./abis/addresses-local.json');
-} else {
-  addresses = require('@marginswap/core-abi/addresses.json');
+export type DeploymentAddresses = {
+  Admin: string;
+  CrossMarginTrading: string;
+  DependencyController: string;
+  Fund: string;
+  IncentiveDistribution: string;
+  Lending: string;
+  LiquidityMiningReward: string;
+  MarginRouter: string;
+  Peg: string;
+  Roles: string;
+  SpotRouter: string;
+  TokenActivation: string;
+  TokenAdmin: string;
+};
+
+let addresses: Record<string, DeploymentAddresses> = require('@marginswap/core-abi/addresses.json');
+
+export function getAddresses(chainId:ChainId) {
+  return addresses[chainId];
 }
 
 export default addresses;
