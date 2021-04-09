@@ -6,6 +6,7 @@ import { ChainId } from '../constants';
 import * as _ from 'lodash';
 import addresses from '../addresses';
 import { Balances, getCrossMarginTrading } from './margin-account';
+import { getIERC20Token } from './IERC20Token';
 
 function getLending(chainId: ChainId, provider: BaseProvider) {
   const networkName = getNetwork(chainId).name;
@@ -70,6 +71,9 @@ export async function buyHourlyBondSubscription(
   chainId = ChainId.MAINNET,
   provider = getDefaultProvider(getNetwork(chainId))
 ): Promise<void> {
+  const tokenContract = getIERC20Token(token, provider);
+  const networkName = getNetwork(chainId).name;
+  await tokenContract.approve(addresses[networkName].Fund, amount);
   const lending = getLending(chainId, provider);
   await lending.buyHourlyBondSubscription(token, amount);
 }
