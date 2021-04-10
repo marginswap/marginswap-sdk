@@ -132,7 +132,6 @@ export class Trade {
    * The percent difference between the mid price before the trade and the trade execution price.
    */
   public readonly priceImpact: Percent;
-
   /**
    * Constructs an exact in trade with the given amount in and route
    * @param route route of the exact in trade
@@ -176,6 +175,7 @@ export class Trade {
 
     this.route = route;
     this.tradeType = tradeType;
+
     this.inputAmount =
       tradeType === TradeType.EXACT_INPUT
         ? amount
