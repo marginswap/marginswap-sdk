@@ -17,8 +17,11 @@ type amount = BigNumber;
 export type Balances = Record<token, amount>;
 
 export function getCrossMarginTrading(chainId: ChainId, provider: BaseProvider): Contract {
-  const networkName = getNetwork(chainId).name;
   return new Contract(getAddresses(chainId).CrossMarginTrading, CrossMarginTrading.abi, provider);
+}
+
+export function getMarginRouterContract(chainId: ChainId, provider: Signer | Provider): Contract {
+  return new Contract(getAddresses(chainId).MarginRouter, MarginRouter.abi, provider);
 }
 
 /**
@@ -91,10 +94,18 @@ export async function crossDeposit(
   tokenAddress: string,
   amount: string,
   chainId = ChainId.MAINNET,
-  library?: Signer | Provider
+  library: Signer | Provider
 ): Promise<number> {
-  const defaultProvider = getDefaultProvider(getNetwork(chainId));
-  const networkName = await defaultProvider.getNetwork().then(network => network.name);
-  const marginRouter = new Contract(getAddresses(chainId).MarginRouter, MarginRouter.abi, library);
+  const marginRouter = getMarginRouterContract(chainId, library);
   return await marginRouter.crossDeposit(tokenAddress, amount);
+}
+
+export async function crossWithdraw(
+  tokenAddress: string,
+  amount: string,
+  chainId = ChainId.MAINNET,
+  library: Signer | Provider
+): Promise<number> {
+  const marginRouter = getMarginRouterContract(chainId, library);
+  return await marginRouter.crossWithdraw(tokenAddress, amount);
 }
