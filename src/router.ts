@@ -59,7 +59,7 @@ function toHex(currencyAmount: CurrencyAmount) {
 }
 
 // TODO: generalize to use both uni and sushi
-const ZERO_HEX = '0x0';
+const ZERO_HEX = `0x${'0'.repeat(64)}`;
 
 /**
  * Represents the Uniswap V2 Router, and has static methods for helping execute trades.

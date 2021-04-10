@@ -16,10 +16,17 @@ export type DeploymentAddresses = {
   TokenAdmin: string;
 };
 
-let addresses: Record<string, DeploymentAddresses> = require('@marginswap/core-abi/addresses.json');
+const addresses: Record<string, DeploymentAddresses> = require('@marginswap/core-abi/addresses.json');
+
+console.log('addresses:');
+console.log(addresses);
 
 export function getAddresses(chainId:ChainId) {
-  return addresses[chainId];
+  console.log(`Getting addresses for ${chainId}`);
+  if (!addresses[chainId]) {
+    throw `Can't get addresses for ${chainId}`;
+  }
+  return addresses[chainId.toString()];
 }
 
 export default addresses;
