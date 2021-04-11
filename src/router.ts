@@ -25,7 +25,7 @@ export interface TradeOptions {
   /**
    * Whether any of the tokens in the path are fee on transfer tokens, which should be handled with special methods
    */
-  marginTrade?: boolean;
+  marginTrade: boolean;
 }
 
 export interface TradeOptionsDeadline extends Omit<TradeOptions, 'ttl'> {
@@ -98,42 +98,49 @@ export abstract class Router {
     let value: string;
     switch (trade.tradeType) {
       case TradeType.EXACT_INPUT:
-        if (etherIn) {
+        if (etherIn && !options.marginTrade) {
           methodName = 'swapExactETHForTokens';
           // (uint amountOutMin, bytes32 amms, address[] calldata path, address to, uint deadline)
-          args = [amountOut, ZERO_HEX, path, to, deadline];
+          args = [amountOut, ZERO_HEX, path];
           value = amountIn;
-        } else if (etherOut) {
+        } else if (etherOut && !options.marginTrade) {
           methodName = 'swapExactTokensForETH';
           // (uint amountIn, uint amountOutMin, bytes32 amms, address[] calldata path, address to, uint deadline)
-          args = [amountIn, amountOut, ZERO_HEX, path, to, deadline];
+          args = [amountIn, amountOut, ZERO_HEX, path];
           value = ZERO_HEX;
         } else {
           methodName = 'swapExactTokensForTokens';
           // (uint amountIn, uint amountOutMin, bytes32 amms, ddress[] calldata path, address to, uint deadline)
-          args = [amountIn, amountOut, ZERO_HEX, path, to, deadline];
+          args = [amountIn, amountOut, ZERO_HEX, path];
           value = ZERO_HEX;
         }
         break;
       case TradeType.EXACT_OUTPUT:
-        if (etherIn) {
+        if (etherIn && !options.marginTrade) {
           methodName = 'swapETHForExactTokens';
           // (uint amountOut, bytes32 amms, address[] calldata path, address to, uint deadline)
-          args = [amountOut, ZERO_HEX, path, to, deadline];
+          args = [amountOut, ZERO_HEX, path];
           value = amountIn;
-        } else if (etherOut) {
+        } else if (etherOut && !options.marginTrade) {
           methodName = 'swapTokensForExactETH';
           // (uint amountOut, uint amountInMax, bytes32 amms, address[] calldata path, address to, uint deadline)
-          args = [amountOut, amountIn, ZERO_HEX, path, to, deadline];
+          args = [amountOut, amountIn, ZERO_HEX, path];
           value = ZERO_HEX;
         } else {
           methodName = 'swapTokensForExactTokens';
           // (uint amountOut, uint amountInMax, address[] calldata path, address to, uint deadline)
-          args = [amountOut, amountIn, ZERO_HEX, path, to, deadline];
+          args = [amountOut, amountIn, ZERO_HEX, path];
           value = ZERO_HEX;
         }
         break;
     }
+
+    if (!options.marginTrade) {
+      args.push(to);
+    }
+
+    args.push(deadline);
+
     return {
       methodName,
       args,
