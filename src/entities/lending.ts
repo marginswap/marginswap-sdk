@@ -4,12 +4,13 @@ import { getNetwork } from '@ethersproject/networks';
 import { BaseProvider, getDefaultProvider } from '@ethersproject/providers';
 import { ChainId } from '../constants';
 import * as _ from 'lodash';
-import addresses from '../addresses';
+import { getAddresses } from '../addresses';
 import { Balances, getCrossMarginTrading } from './margin-account';
+import { getIERC20Token } from './IERC20Token';
 
 function getLending(chainId: ChainId, provider: BaseProvider) {
   const networkName = getNetwork(chainId).name;
-  return new Contract(addresses[networkName].Lending, LendingCore.abi, provider);
+  return new Contract(getAddresses(chainId).Lending, LendingCore.abi, provider);
 }
 
 /**
@@ -66,10 +67,12 @@ export async function getHourlyBondMaturities(
 
 export async function buyHourlyBondSubscription(
   token: string,
-  amount: number,
+  amount: string,
   chainId = ChainId.MAINNET,
   provider = getDefaultProvider(getNetwork(chainId))
 ): Promise<void> {
+  const tokenContract = getIERC20Token(token, provider);
+  await tokenContract.approve(getAddresses(chainId).Fund, amount);
   const lending = getLending(chainId, provider);
   await lending.buyHourlyBondSubscription(token, amount);
 }
@@ -84,4 +87,14 @@ export async function getBondsCostInDollars(
   const marginTrading = getCrossMarginTrading(chainId, provider);
   const bondsData = await Promise.all(tokens.map(token => marginTrading.viewCurrentPriceInPeg(token, balances[token])));
   return _.zipObject(tokens, bondsData);
+}
+
+export async function withdrawHourlyBond(
+  token: string,
+  amount: string,
+  chainId = ChainId.MAINNET,
+  provider = getDefaultProvider(getNetwork(chainId))
+): Promise<void> {
+  const lending = getLending(chainId, provider);
+  await lending.withdrawHourlyBond(token, amount);
 }
