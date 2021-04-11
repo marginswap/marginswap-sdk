@@ -9,6 +9,7 @@ import { BaseProvider, getDefaultProvider } from '@ethersproject/providers';
 import { ChainId } from '../constants';
 import * as _ from 'lodash';
 import { BigNumber } from '@ethersproject/bignumber';
+import { getIERC20Token } from './IERC20Token';
 
 type token = string;
 type amount = BigNumber;
@@ -92,9 +93,11 @@ export async function crossDeposit(
   tokenAddress: string,
   amount: string,
   chainId = ChainId.MAINNET,
-  library: Signer | Provider
+  provider = getDefaultProvider(getNetwork(chainId))
 ): Promise<number> {
-  const marginRouter = getMarginRouterContract(chainId, library);
+  const tokenContract = getIERC20Token(tokenAddress, provider);
+  await tokenContract.approve(getAddresses(chainId).Fund, amount);
+  const marginRouter = getMarginRouterContract(chainId, provider);
   return await marginRouter.crossDeposit(tokenAddress, amount);
 }
 
