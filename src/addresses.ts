@@ -1,4 +1,4 @@
-import { ChainId } from "./constants";
+import { ChainId } from './constants';
 
 export type DeploymentAddresses = {
   Admin: string;
@@ -21,7 +21,7 @@ const addresses: Record<string, DeploymentAddresses> = require('@marginswap/core
 console.log('addresses:');
 console.log(addresses);
 
-export function getAddresses(chainId:ChainId) {
+export function getAddresses(chainId: ChainId): DeploymentAddresses {
   console.log(`Getting addresses for ${chainId}`);
   if (!addresses[chainId]) {
     throw `Can't get addresses for ${chainId}`;

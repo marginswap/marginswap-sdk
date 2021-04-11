@@ -1,11 +1,9 @@
 import { Contract } from '@ethersproject/contracts';
 import CrossMarginTrading from '@marginswap/core-abi/artifacts/contracts/CrossMarginTrading.sol/CrossMarginTrading.json';
-import Admin from '@marginswap/core-abi/artifacts/contracts/Admin.sol/Admin.json';
-import LiquidityMiningReward from '@marginswap/core-abi/artifacts/contracts/LiquidityMiningReward.sol/LiquidityMiningReward.json';
 import MarginRouter from '@marginswap/core-abi/artifacts/contracts/MarginRouter.sol/MarginRouter.json';
 import { Signer } from '@ethersproject/abstract-signer';
 import { Provider } from '@ethersproject/abstract-provider';
-import {getAddresses} from '../addresses';
+import { getAddresses } from '../addresses';
 import { getNetwork } from '@ethersproject/networks';
 import { BaseProvider, getDefaultProvider } from '@ethersproject/providers';
 import { ChainId } from '../constants';

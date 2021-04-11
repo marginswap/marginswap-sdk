@@ -4,7 +4,7 @@ import { getNetwork } from '@ethersproject/networks';
 import { BaseProvider, getDefaultProvider } from '@ethersproject/providers';
 import { ChainId } from '../constants';
 import * as _ from 'lodash';
-import {getAddresses} from '../addresses';
+import addresses, { getAddresses } from '../addresses';
 import { Balances, getCrossMarginTrading } from './margin-account';
 import { getIERC20Token } from './IERC20Token';
 
