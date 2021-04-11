@@ -67,7 +67,7 @@ export async function getHourlyBondMaturities(
 
 export async function buyHourlyBondSubscription(
   token: string,
-  amount: number,
+  amount: string,
   chainId = ChainId.MAINNET,
   provider = getDefaultProvider(getNetwork(chainId))
 ): Promise<void> {
@@ -91,7 +91,7 @@ export async function getBondsCostInDollars(
 
 export async function withdrawHourlyBond(
   token: string,
-  amount: number,
+  amount: string,
   chainId = ChainId.MAINNET,
   provider = getDefaultProvider(getNetwork(chainId))
 ): Promise<void> {
