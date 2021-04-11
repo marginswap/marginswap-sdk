@@ -28,5 +28,3 @@ export function getAddresses(chainId: ChainId): DeploymentAddresses {
   }
   return addresses[chainId.toString()];
 }
-
-export default addresses;

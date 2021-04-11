@@ -4,7 +4,7 @@ import { getNetwork } from '@ethersproject/networks';
 import { BaseProvider, getDefaultProvider } from '@ethersproject/providers';
 import { ChainId } from '../constants';
 import * as _ from 'lodash';
-import addresses, { getAddresses } from '../addresses';
+import { getAddresses } from '../addresses';
 import { Balances, getCrossMarginTrading } from './margin-account';
 import { getIERC20Token } from './IERC20Token';
 
@@ -72,8 +72,7 @@ export async function buyHourlyBondSubscription(
   provider = getDefaultProvider(getNetwork(chainId))
 ): Promise<void> {
   const tokenContract = getIERC20Token(token, provider);
-  const networkName = getNetwork(chainId).name;
-  await tokenContract.approve(addresses[networkName].Fund, amount);
+  await tokenContract.approve(getAddresses(chainId).Fund, amount);
   const lending = getLending(chainId, provider);
   await lending.buyHourlyBondSubscription(token, amount);
 }
@@ -88,4 +87,14 @@ export async function getBondsCostInDollars(
   const marginTrading = getCrossMarginTrading(chainId, provider);
   const bondsData = await Promise.all(tokens.map(token => marginTrading.viewCurrentPriceInPeg(token, balances[token])));
   return _.zipObject(tokens, bondsData);
+}
+
+export async function withdrawHourlyBond(
+  token: string,
+  amount: number,
+  chainId = ChainId.MAINNET,
+  provider = getDefaultProvider(getNetwork(chainId))
+): Promise<void> {
+  const lending = getLending(chainId, provider);
+  await lending.withdrawHourlyBond(token, amount);
 }
