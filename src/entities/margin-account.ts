@@ -99,8 +99,6 @@ export async function crossDeposit(
   chainId: ChainId,
   provider: Provider
 ): Promise<number> {
-  const tokenContract = getIERC20Token(tokenAddress, provider);
-  await tokenContract.approve(getAddresses(chainId).Fund, amount);
   const marginRouter = getMarginRouterContract(chainId, provider);
   return await marginRouter.crossDeposit(tokenAddress, amount);
 }
@@ -137,4 +135,15 @@ export async function borrowable(
   const currentPriceE18 = await priceManager.viewCurrentPriceInPeg(tokenAddress, E18);
 
   return borrowableInPeg.mul(E18).div(currentPriceE18);
+}
+
+export async function approveToFund
+(
+  tokenAddress: string,
+  amount: string,
+  chainId: ChainId,
+  provider: Provider
+): Promise<number> {
+  const tokenContract = getIERC20Token(tokenAddress, provider);
+  return await tokenContract.approve(getAddresses(chainId).Fund, amount);
 }
