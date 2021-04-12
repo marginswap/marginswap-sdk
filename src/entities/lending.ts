@@ -63,7 +63,12 @@ export async function getHourlyBondMaturities(
 ): Promise<Balances> {
   const lending = getLending(chainId, provider);
   const bondsData = await Promise.all(tokens.map(token => lending.hourlyBondAccounts(token, lenderAddress)));
-  return bondsData.reduce((acc, cur, index) => ({ ...acc, [tokens[index]]: cur.moduloHour }), {});
+  return bondsData.reduce((acc, cur, index) => {
+    const currentTime = Math.floor(Date.now() / 1000);
+    const oneHour = 60 ** 2;
+    const maturity = (cur.moduloHour + oneHour - (currentTime % oneHour)) % oneHour;
+    return { ...acc, [tokens[index]]: maturity };
+  }, {});
 }
 
 export async function buyHourlyBondSubscription(
