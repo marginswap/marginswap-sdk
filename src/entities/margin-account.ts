@@ -4,7 +4,7 @@ import MarginRouter from '@marginswap/core-abi/artifacts/contracts/MarginRouter.
 import PriceAware from '@marginswap/core-abi/artifacts/contracts/PriceAware.sol/PriceAware.json';
 import CrossMarginAccounts from '@marginswap/core-abi/artifacts/contracts/CrossMarginAccounts.sol/CrossMarginAccounts.json';
 import { Signer } from '@ethersproject/abstract-signer';
-import { Provider } from '@ethersproject/abstract-provider';
+import { Provider, TransactionReceipt } from '@ethersproject/abstract-provider';
 import { getAddresses } from '../addresses';
 import { ChainId } from '../constants';
 import * as _ from 'lodash';
@@ -98,7 +98,7 @@ export async function crossDeposit(
   amount: string,
   chainId: ChainId,
   provider: Provider
-): Promise<number> {
+): Promise<TransactionReceipt> {
   const marginRouter = getMarginRouterContract(chainId, provider);
   return await marginRouter.crossDeposit(tokenAddress, amount);
 }
@@ -108,7 +108,7 @@ export async function crossWithdraw(
   amount: string,
   chainId: ChainId,
   library: Signer | Provider
-): Promise<number> {
+): Promise<TransactionReceipt> {
   const marginRouter = getMarginRouterContract(chainId, library);
   return await marginRouter.crossWithdraw(tokenAddress, amount);
 }
@@ -137,8 +137,7 @@ export async function borrowable(
   return borrowableInPeg.mul(E18).div(currentPriceE18);
 }
 
-export async function approveToFund
-(
+export async function approveToFund(
   tokenAddress: string,
   amount: string,
   chainId: ChainId,
