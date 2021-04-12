@@ -1,5 +1,6 @@
 import { Contract } from '@ethersproject/contracts';
 import LendingCore from '@marginswap/core-abi/artifacts/contracts/Lending.sol/Lending.json';
+import PriceAware from '@marginswap/core-abi/artifacts/contracts/PriceAware.sol/PriceAware.json';
 import { getNetwork } from '@ethersproject/networks';
 import { BaseProvider, getDefaultProvider } from '@ethersproject/providers';
 import { ChainId } from '../constants';
@@ -84,8 +85,10 @@ export async function getBondsCostInDollars(
   provider = getDefaultProvider(getNetwork(chainId))
 ): Promise<Balances> {
   const balances = await getHourlyBondBalances(lenderAddress, tokens, chainId, provider);
-  const marginTrading = getCrossMarginTrading(chainId, provider);
-  const bondsData = await Promise.all(tokens.map(token => marginTrading.viewCurrentPriceInPeg(token, balances[token])));
+  const crossMarginAddress = getAddresses(chainId).CrossMarginTrading;
+  const priceManager = new Contract(crossMarginAddress, PriceAware.abi, provider);
+
+  const bondsData = await Promise.all(tokens.map(token => priceManager.viewCurrentPriceInPeg(token, balances[token])));
   return _.zipObject(tokens, bondsData);
 }
 
