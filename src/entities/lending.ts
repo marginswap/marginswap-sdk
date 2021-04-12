@@ -2,7 +2,7 @@ import { Contract } from '@ethersproject/contracts';
 import LendingCore from '@marginswap/core-abi/artifacts/contracts/Lending.sol/Lending.json';
 import PriceAware from '@marginswap/core-abi/artifacts/contracts/PriceAware.sol/PriceAware.json';
 import { getNetwork } from '@ethersproject/networks';
-import { BaseProvider, getDefaultProvider } from '@ethersproject/providers';
+import { BaseProvider, getDefaultProvider, TransactionReceipt } from '@ethersproject/providers';
 import { ChainId } from '../constants';
 import * as _ from 'lodash';
 import { getAddresses } from '../addresses';
@@ -71,11 +71,11 @@ export async function buyHourlyBondSubscription(
   amount: string,
   chainId = ChainId.MAINNET,
   provider = getDefaultProvider(getNetwork(chainId))
-): Promise<void> {
+): Promise<TransactionReceipt> {
   const tokenContract = getIERC20Token(token, provider);
-  await tokenContract.approve(getAddresses(chainId).Fund, amount);
+
   const lending = getLending(chainId, provider);
-  await lending.buyHourlyBondSubscription(token, amount);
+  return lending.buyHourlyBondSubscription(token, amount);
 }
 
 export async function getBondsCostInDollars(
@@ -97,7 +97,7 @@ export async function withdrawHourlyBond(
   amount: string,
   chainId = ChainId.MAINNET,
   provider = getDefaultProvider(getNetwork(chainId))
-): Promise<void> {
+): Promise<TransactionReceipt> {
   const lending = getLending(chainId, provider);
-  await lending.withdrawHourlyBond(token, amount);
+  return lending.withdrawHourlyBond(token, amount);
 }
