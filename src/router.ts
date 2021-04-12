@@ -81,7 +81,6 @@ export abstract class Router {
     const etherOut = trade.outputAmount.currency === ETHER;
     // the router does not support both ether in and out
     invariant(!(etherIn && etherOut), 'ETHER_IN_OUT');
-    invariant(!((etherIn || etherOut) && options.marginTrade));
     invariant(!('ttl' in options) || options.ttl > 0, 'TTL');
 
     const to: string = validateAndParseAddress(options.recipient);
