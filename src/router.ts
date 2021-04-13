@@ -1,7 +1,8 @@
-import { TradeType } from './constants';
+import { TradeType, AMMs } from './constants';
 import invariant from 'tiny-invariant';
 import { validateAndParseAddress } from './utils';
 import { CurrencyAmount, ETHER, Percent, Trade } from './entities';
+import ethers from '@ethersproject/bytes';
 
 /**
  * Options for producing the arguments to send call to the router.
@@ -58,8 +59,10 @@ function toHex(currencyAmount: CurrencyAmount) {
   return `0x${currencyAmount.raw.toString(16)}`;
 }
 
-// TODO: generalize to use both uni and sushi
-const ZERO_HEX = `0x${'0'.repeat(64)}`;
+function encodeAMMPath(ammPath: AMMs[]) {
+  const encoded = ethers.hexlify(ammPath.map((amm: AMMs) => (amm == AMMs.UNI ? 0 : 1)));
+  return `${encoded}${'0'.repeat(64 + 2 - encoded.length)}`;
+}
 
 /**
  * Represents the Uniswap V2 Router, and has static methods for helping execute trades.
@@ -81,8 +84,10 @@ export abstract class Router {
     const etherOut = trade.outputAmount.currency === ETHER;
     // the router does not support both ether in and out
     invariant(!(etherIn && etherOut), 'ETHER_IN_OUT');
-    invariant(!('ttl' in options) || options.ttl > 0, 'TTL');
+    invariant(!('ttl' in options) || options.ttl > 0, 'TTL')
 
+    const ammPath = trade.route.pairs.map(pair => pair.amm);
+    const zeroHex = encodeAMMPath(ammPath);
     const to: string = validateAndParseAddress(options.recipient);
     const amountIn: string = toHex(trade.maximumAmountIn(options.allowedSlippage));
     const amountOut: string = toHex(trade.minimumAmountOut(options.allowedSlippage));
@@ -100,36 +105,36 @@ export abstract class Router {
         if (etherIn && !options.marginTrade) {
           methodName = 'swapExactETHForTokens';
           // (uint amountOutMin, bytes32 amms, address[] calldata path, address to, uint deadline)
-          args = [amountOut, ZERO_HEX, path];
+          args = [amountOut, zeroHex, path];
           value = amountIn;
         } else if (etherOut && !options.marginTrade) {
           methodName = 'swapExactTokensForETH';
           // (uint amountIn, uint amountOutMin, bytes32 amms, address[] calldata path, address to, uint deadline)
-          args = [amountIn, amountOut, ZERO_HEX, path];
-          value = ZERO_HEX;
+          args = [amountIn, amountOut, zeroHex, path];
+          value = zeroHex;
         } else {
           methodName = 'swapExactTokensForTokens';
           // (uint amountIn, uint amountOutMin, bytes32 amms, ddress[] calldata path, address to, uint deadline)
-          args = [amountIn, amountOut, ZERO_HEX, path];
-          value = ZERO_HEX;
+          args = [amountIn, amountOut, zeroHex, path];
+          value = zeroHex;
         }
         break;
       case TradeType.EXACT_OUTPUT:
         if (etherIn && !options.marginTrade) {
           methodName = 'swapETHForExactTokens';
           // (uint amountOut, bytes32 amms, address[] calldata path, address to, uint deadline)
-          args = [amountOut, ZERO_HEX, path];
+          args = [amountOut, zeroHex, path];
           value = amountIn;
         } else if (etherOut && !options.marginTrade) {
           methodName = 'swapTokensForExactETH';
           // (uint amountOut, uint amountInMax, bytes32 amms, address[] calldata path, address to, uint deadline)
-          args = [amountOut, amountIn, ZERO_HEX, path];
-          value = ZERO_HEX;
+          args = [amountOut, amountIn, zeroHex, path];
+          value = zeroHex;
         } else {
           methodName = 'swapTokensForExactTokens';
           // (uint amountOut, uint amountInMax, address[] calldata path, address to, uint deadline)
-          args = [amountOut, amountIn, ZERO_HEX, path];
-          value = ZERO_HEX;
+          args = [amountOut, amountIn, zeroHex, path];
+          value = zeroHex;
         }
         break;
     }

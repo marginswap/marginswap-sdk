@@ -14,9 +14,9 @@ import {
   _997,
   _1000,
   ChainId,
-  factoryAddresses,
   AMMs,
-  initCodeHashes
+  amms,
+  initCodeHashes,
 } from '../constants';
 import { sqrt, parseBigintIsh } from '../utils';
 import { InsufficientReservesError, InsufficientInputAmountError } from '../errors';
@@ -29,6 +29,7 @@ const PAIR_ADDRESS_CACHE: {
 export class Pair {
   public readonly liquidityToken: Token;
   public readonly factoryAddress: string;
+  public readonly amm: AMMs;
   private readonly tokenAmounts: [TokenAmount, TokenAmount];
 
   public static getAddress(tokenA: Token, tokenB: Token, factoryAddress: string): string {
@@ -60,6 +61,7 @@ export class Pair {
       ? [tokenAmountA, tokenAmountB]
       : [tokenAmountB, tokenAmountA];
     this.factoryAddress = factoryAddress;
+    this.amm = amms[this.factoryAddress];
     this.liquidityToken = new Token(
       tokenAmounts[0].token.chainId,
       Pair.getAddress(tokenAmounts[0].token, tokenAmounts[1].token, this.factoryAddress),
