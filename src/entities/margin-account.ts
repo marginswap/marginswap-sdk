@@ -71,10 +71,7 @@ export async function getAccountHoldingTotal(
   provider: Provider
 ): Promise<amount> {
   const marginTrader = getCrossMarginTrading(chainId, provider);
-  const total = await marginTrader.viewHoldingsInPeg(traderAddress);
-  console.log('holding total');
-  console.log(total);
-  return total;
+  return marginTrader.viewHoldingsInPeg(traderAddress);
 }
 
 export async function getAccountBorrowTotal(
@@ -83,10 +80,7 @@ export async function getAccountBorrowTotal(
   provider: Provider
 ): Promise<amount> {
   const marginTrader = getCrossMarginTrading(chainId, provider);
-  const total = await marginTrader.viewLoanInPeg(traderAddress);
-  console.log('borrow total');
-  console.log(total);
-  return total;
+  return marginTrader.viewLoanInPeg(traderAddress);
 }
 
 export async function getBalanceInToken(
