@@ -129,12 +129,12 @@ export async function borrowable(
 
   const leveragePercent = (await marginAccounts.leveragePercent()).toNumber();
   const levRatio = (leveragePercent - 100 - PERCENTAGE_BUFFER) / leveragePercent;
-  const borrowableInPeg = holdingTotal.mul(levRatio).div(borrowTotal.add(1));
+  const borrowableInPeg = holdingTotal.toNumber() * levRatio / (borrowTotal.toNumber() + 1);
 
   const E18 = parseFixed('1', 18);
   const currentPriceE18 = await priceManager.viewCurrentPriceInPeg(tokenAddress, E18);
 
-  return borrowableInPeg.mul(E18).div(currentPriceE18);
+  return BigNumber.from(borrowableInPeg).mul(E18).div(currentPriceE18);
 }
 
 export async function approveToFund
