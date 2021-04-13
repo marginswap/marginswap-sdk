@@ -15,8 +15,8 @@ import {
   _1000,
   ChainId,
   AMMs,
-  amms,
   initCodeHashes,
+  factoryAddresses,
 } from '../constants';
 import { sqrt, parseBigintIsh } from '../utils';
 import { InsufficientReservesError, InsufficientInputAmountError } from '../errors';
@@ -32,8 +32,9 @@ export class Pair {
   public readonly amm: AMMs;
   private readonly tokenAmounts: [TokenAmount, TokenAmount];
 
-  public static getAddress(tokenA: Token, tokenB: Token, factoryAddress: string): string {
+  public static getAddress(tokenA: Token, tokenB: Token, amm: AMMs): string {
     const tokens = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA]; // does safety checks
+    const factoryAddress = factoryAddresses[amm];
 
     if (!PAIR_ADDRESS_CACHE.factoryAddress) {
       PAIR_ADDRESS_CACHE.factoryAddress = {};
@@ -56,15 +57,15 @@ export class Pair {
     return PAIR_ADDRESS_CACHE[factoryAddress][tokens[0].address][tokens[1].address];
   }
 
-  public constructor(tokenAmountA: TokenAmount, tokenAmountB: TokenAmount, factoryAddress: string) {
+  public constructor(tokenAmountA: TokenAmount, tokenAmountB: TokenAmount, amm: AMMs) {
     const tokenAmounts = tokenAmountA.token.sortsBefore(tokenAmountB.token) // does safety checks
       ? [tokenAmountA, tokenAmountB]
       : [tokenAmountB, tokenAmountA];
-    this.factoryAddress = factoryAddress;
-    this.amm = amms[this.factoryAddress];
+    this.factoryAddress = factoryAddresses[amm];
+    this.amm = amm;
     this.liquidityToken = new Token(
       tokenAmounts[0].token.chainId,
-      Pair.getAddress(tokenAmounts[0].token, tokenAmounts[1].token, this.factoryAddress),
+      Pair.getAddress(tokenAmounts[0].token, tokenAmounts[1].token, amm),
       18,
       'UNI-V2',
       'Uniswap V2'
@@ -150,7 +151,7 @@ export class Pair {
     }
     return [
       outputAmount,
-      new Pair(inputReserve.add(inputAmount), outputReserve.subtract(outputAmount), this.factoryAddress)
+      new Pair(inputReserve.add(inputAmount), outputReserve.subtract(outputAmount), this.amm)
     ];
   }
 
@@ -174,7 +175,7 @@ export class Pair {
     );
     return [
       inputAmount,
-      new Pair(inputReserve.add(inputAmount), outputReserve.subtract(outputAmount), this.factoryAddress)
+      new Pair(inputReserve.add(inputAmount), outputReserve.subtract(outputAmount), this.amm)
     ];
   }
 
