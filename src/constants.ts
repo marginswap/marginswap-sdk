@@ -39,9 +39,9 @@ export const factoryAddresses: Record<AMMs, string> = {
   [AMMs.SUSHI]: '0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac'
 };
 
-export const initCodeHashes: Record<AMMs, string> = {
-  [AMMs.UNI]: '0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f',
-  [AMMs.SUSHI]: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303'
+export const initCodeHashes: Record<string, string> = {
+  [factoryAddresses[AMMs.UNI]]: '0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f',
+  [factoryAddresses[AMMs.SUSHI]]: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303'
 };
 
 export const MINIMUM_LIQUIDITY = JSBI.BigInt(1000);
