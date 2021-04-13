@@ -77,8 +77,6 @@ export async function buyHourlyBondSubscription(
   chainId = ChainId.MAINNET,
   provider = getDefaultProvider(getNetwork(chainId))
 ): Promise<TransactionReceipt> {
-  const tokenContract = getIERC20Token(token, provider);
-
   const lending = getLending(chainId, provider);
   return lending.buyHourlyBondSubscription(token, amount);
 }

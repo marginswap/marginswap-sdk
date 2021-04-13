@@ -144,5 +144,19 @@ export async function approveToFund(
   provider: Provider
 ): Promise<number> {
   const tokenContract = getIERC20Token(tokenAddress, provider);
-  return await tokenContract.approve(getAddresses(chainId).Fund, amount);
+  return tokenContract.approve(getAddresses(chainId).Fund, amount);
+}
+
+export async function getTokenAllowances(
+  ownerAddress: string,
+  tokenAddresses: string[],
+  chainId: ChainId,
+  provider: Provider
+): Promise<number[]> {
+  return Promise.all(
+    tokenAddresses.map(async tokenAddress => {
+      const tokenContract = getIERC20Token(tokenAddress, provider);
+      return tokenContract.allowance(ownerAddress, getAddresses(chainId).Fund);
+    })
+  );
 }
