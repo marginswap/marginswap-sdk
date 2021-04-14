@@ -8,8 +8,9 @@ import { Provider, TransactionReceipt } from '@ethersproject/abstract-provider';
 import { getAddresses } from '../addresses';
 import { ChainId } from '../constants';
 import * as _ from 'lodash';
-import { BigNumber, parseFixed } from '@ethersproject/bignumber';
+import { parseFixed } from '@ethersproject/bignumber';
 import { getIERC20Token } from './IERC20Token';
+import BigNumber from "bignumber.js";
 
 const PERCENTAGE_BUFFER = 3;
 
@@ -120,8 +121,8 @@ export async function borrowable(
   provider: Provider
 ): Promise<BigNumber> {
   const marginTrader = getCrossMarginTrading(chainId, provider);
-  const holdingTotal = await getAccountHoldingTotal(traderAddress, chainId, provider);
-  const borrowTotal = await getAccountBorrowTotal(traderAddress, chainId, provider);
+  const holdingTotal = new BigNumber((await getAccountHoldingTotal(traderAddress, chainId, provider)).toString());
+  const borrowTotal = new BigNumber((await getAccountBorrowTotal(traderAddress, chainId, provider)).toString());
 
   const crossMarginAddress = getAddresses(chainId).CrossMarginTrading;
   const marginAccounts = new Contract(crossMarginAddress, CrossMarginAccounts.abi, provider);
@@ -130,11 +131,10 @@ export async function borrowable(
   const leveragePercent = (await marginAccounts.leveragePercent()).toNumber();
   const levRatio = (leveragePercent - 100 - PERCENTAGE_BUFFER) / leveragePercent;
 
-  const E18 = parseFixed('1', 18);
+  const E18 = new BigNumber(10).pow(18);
+  let currentPriceE18 = (await priceManager.viewCurrentPriceInPeg(tokenAddress, E18.toString()));
 
-  const currentPriceE18 = await priceManager.viewCurrentPriceInPeg(tokenAddress, E18);
-
-  return holdingTotal.mul(E18).mul(levRatio).div(borrowTotal.add(1)).div(currentPriceE18);
+  return holdingTotal.times(E18).times(levRatio).div(borrowTotal.plus(1)).div(new BigNumber(currentPriceE18.toString()));
 }
 
 export async function approveToFund(
