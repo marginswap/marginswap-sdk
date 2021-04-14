@@ -16,7 +16,7 @@ import {
   ChainId,
   AMMs,
   initCodeHashes,
-  factoryAddresses,
+  factoryAddresses
 } from '../constants';
 import { sqrt, parseBigintIsh } from '../utils';
 import { InsufficientReservesError, InsufficientInputAmountError } from '../errors';
@@ -149,10 +149,7 @@ export class Pair {
     if (JSBI.equal(outputAmount.raw, ZERO)) {
       throw new InsufficientInputAmountError();
     }
-    return [
-      outputAmount,
-      new Pair(inputReserve.add(inputAmount), outputReserve.subtract(outputAmount), this.amm)
-    ];
+    return [outputAmount, new Pair(inputReserve.add(inputAmount), outputReserve.subtract(outputAmount), this.amm)];
   }
 
   public getInputAmount(outputAmount: TokenAmount): [TokenAmount, Pair] {
@@ -173,10 +170,7 @@ export class Pair {
       outputAmount.token.equals(this.token0) ? this.token1 : this.token0,
       JSBI.add(JSBI.divide(numerator, denominator), ONE)
     );
-    return [
-      inputAmount,
-      new Pair(inputReserve.add(inputAmount), outputReserve.subtract(outputAmount), this.amm)
-    ];
+    return [inputAmount, new Pair(inputReserve.add(inputAmount), outputReserve.subtract(outputAmount), this.amm)];
   }
 
   public getLiquidityMinted(
