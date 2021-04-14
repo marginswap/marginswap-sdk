@@ -2,7 +2,7 @@ import { TradeType, AMMs } from './constants';
 import invariant from 'tiny-invariant';
 import { validateAndParseAddress } from './utils';
 import { CurrencyAmount, ETHER, Percent, Trade } from './entities';
-import ethers from '@ethersproject/bytes';
+import { hexlify } from '@ethersproject/bytes';
 
 /**
  * Options for producing the arguments to send call to the router.
@@ -60,7 +60,7 @@ function toHex(currencyAmount: CurrencyAmount) {
 }
 
 function encodeAMMPath(ammPath: AMMs[]) {
-  const encoded = ethers.hexlify(ammPath.map((amm: AMMs) => (amm == AMMs.UNI ? 0 : 1)));
+  const encoded = hexlify(ammPath.map((amm: AMMs) => (amm == AMMs.UNI ? 0 : 1)));
   return `${encoded}${'0'.repeat(64 + 2 - encoded.length)}`;
 }
 
@@ -84,7 +84,7 @@ export abstract class Router {
     const etherOut = trade.outputAmount.currency === ETHER;
     // the router does not support both ether in and out
     invariant(!(etherIn && etherOut), 'ETHER_IN_OUT');
-    invariant(!('ttl' in options) || options.ttl > 0, 'TTL')
+    invariant(!('ttl' in options) || options.ttl > 0, 'TTL');
 
     const ammPath = trade.route.pairs.map(pair => pair.amm);
     const zeroHex = encodeAMMPath(ammPath);

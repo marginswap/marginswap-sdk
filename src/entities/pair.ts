@@ -36,15 +36,15 @@ export class Pair {
     const tokens = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA]; // does safety checks
     const factoryAddress = factoryAddresses[amm];
 
-    if (!PAIR_ADDRESS_CACHE.factoryAddress) {
-      PAIR_ADDRESS_CACHE.factoryAddress = {};
+    if (!PAIR_ADDRESS_CACHE[factoryAddress]) {
+      PAIR_ADDRESS_CACHE[factoryAddress] = {};
     }
 
-    if (PAIR_ADDRESS_CACHE?.[factoryAddress]?.[tokens[0].address]?.[tokens[1].address] === undefined) {
-      PAIR_ADDRESS_CACHE.factoryAddress = {
-        ...PAIR_ADDRESS_CACHE.factoryAddress,
+    if (PAIR_ADDRESS_CACHE[factoryAddress][tokens[0].address]?.[tokens[1].address] === undefined) {
+      PAIR_ADDRESS_CACHE[factoryAddress] = {
+        ...PAIR_ADDRESS_CACHE[factoryAddress],
         [tokens[0].address]: {
-          ...PAIR_ADDRESS_CACHE?.factoryAddress?.[tokens[0].address],
+          ...(PAIR_ADDRESS_CACHE[factoryAddress]?.[tokens[0].address] || {}),
           [tokens[1].address]: getCreate2Address(
             factoryAddress,
             keccak256(['bytes'], [pack(['address', 'address'], [tokens[0].address, tokens[1].address])]),
