@@ -18,11 +18,7 @@ export type DeploymentAddresses = {
 
 const addresses: Record<string, DeploymentAddresses> = require('@marginswap/core-abi/addresses.json');
 
-console.log('addresses:');
-console.log(addresses);
-
 export function getAddresses(chainId: ChainId): DeploymentAddresses {
-  console.log(`Getting addresses for ${chainId}`);
   if (!addresses[chainId]) {
     throw `Can't get addresses for ${chainId}`;
   }
