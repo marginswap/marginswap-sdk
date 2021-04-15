@@ -10,7 +10,7 @@ import { ChainId } from '../constants';
 import * as _ from 'lodash';
 import { parseFixed } from '@ethersproject/bignumber';
 import { getIERC20Token } from './IERC20Token';
-import BigNumber from "bignumber.js";
+import BigNumber from 'bignumber.js';
 
 const PERCENTAGE_BUFFER = 3;
 
@@ -132,9 +132,13 @@ export async function borrowable(
   const levRatio = (leveragePercent - 100 - PERCENTAGE_BUFFER) / leveragePercent;
 
   const E18 = new BigNumber(10).pow(18);
-  let currentPriceE18 = (await priceManager.viewCurrentPriceInPeg(tokenAddress, E18.toString()));
+  const currentPriceE18 = await priceManager.viewCurrentPriceInPeg(tokenAddress, E18.toString());
 
-  return holdingTotal.times(E18).times(levRatio).div(borrowTotal.plus(1)).div(new BigNumber(currentPriceE18.toString()));
+  return holdingTotal
+    .times(E18)
+    .times(levRatio)
+    .div(borrowTotal.plus(1))
+    .div(new BigNumber(currentPriceE18.toString()));
 }
 
 export async function approveToFund(
@@ -159,4 +163,16 @@ export async function getTokenAllowances(
       return tokenContract.allowance(ownerAddress, getAddresses(chainId).Fund);
     })
   );
+}
+
+export async function overCollateralizedBorrow(
+  depositToken: string,
+  depositAmount: string,
+  borrowToken: string,
+  withdrawAmount: string,
+  chainId: ChainId,
+  provider: Provider
+): Promise<void> {
+  const marginRouter = getMarginRouterContract(chainId, provider);
+  await marginRouter.crossOvercollateralizedBorrow(depositToken, depositAmount, borrowToken, withdrawAmount);
 }
