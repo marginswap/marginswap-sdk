@@ -10,7 +10,6 @@ import { ChainId } from '../constants';
 import * as _ from 'lodash';
 import { getIERC20Token } from './IERC20Token';
 import { BigNumber } from '@ethersproject/bignumber';
-// import BigNumber from 'bignumber.js';
 
 const PERCENTAGE_BUFFER = 3;
 
@@ -115,8 +114,17 @@ export async function crossWithdraw(
   return await marginRouter.crossWithdraw(tokenAddress, amount);
 }
 
+export async function crossBorrow(
+  tokenAddress: string,
+  amount: string,
+  chainId: ChainId,
+  library: Signer | Provider
+): Promise<TransactionReceipt> {
+  const marginRouter = getMarginRouterContract(chainId, library);
+  return await marginRouter.crossBorrow(tokenAddress, amount);
+}
+
 export async function borrowableInPeg(traderAddress: string, chainId: ChainId, provider: Provider): Promise<string> {
-  const marginTrader = getCrossMarginTrading(chainId, provider);
   const holdingTotal = await getAccountHoldingTotal(traderAddress, chainId, provider);
   const borrowTotal = await getAccountBorrowTotal(traderAddress, chainId, provider);
 
@@ -158,6 +166,18 @@ export async function getTokenAllowances(
       return tokenContract.allowance(ownerAddress, getAddresses(chainId).Fund);
     })
   );
+}
+
+export async function overCollateralizedBorrow(
+  depositToken: string,
+  depositAmount: string,
+  borrowToken: string,
+  withdrawAmount: string,
+  chainId: ChainId,
+  provider: Provider
+): Promise<void> {
+  const marginRouter = getMarginRouterContract(chainId, provider);
+  await marginRouter.crossOvercollateralizedBorrow(depositToken, depositAmount, borrowToken, withdrawAmount);
 }
 
 export async function viewCurrentPriceInPeg(

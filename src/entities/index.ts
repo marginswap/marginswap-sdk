@@ -6,3 +6,4 @@ export * from './currency';
 export * from './margin-account';
 export * from './fractions';
 export * from './lending';
+export * from './IERC20Token';
