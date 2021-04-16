@@ -18,7 +18,8 @@ type amount = BigNumber;
 export type Balances = Record<token, amount>;
 
 export function getCrossMarginTrading(chainId: ChainId, provider: Provider): Contract {
-  return new Contract(getAddresses(chainId).CrossMarginTrading, CrossMarginTrading.abi, provider);
+  const address = getAddresses(chainId).CrossMarginTrading;
+  return new Contract(address, CrossMarginTrading.abi, provider);
 }
 
 export function getMarginRouterContract(chainId: ChainId, provider: Signer | Provider): Contract {
@@ -149,6 +150,26 @@ export async function borrowable(
     .div(BigNumber.from(currentPriceE18.toString()));
 }
 
+export async function borrowableInPeg(traderAddress: string, chainId: ChainId, provider: Provider): Promise<string> {
+  const holdingTotal = await getAccountHoldingTotal(traderAddress, chainId, provider);
+  const borrowTotal = await getAccountBorrowTotal(traderAddress, chainId, provider);
+
+  const crossMarginAddress = getAddresses(chainId).CrossMarginTrading;
+  const marginAccounts = new Contract(crossMarginAddress, CrossMarginAccounts.abi, provider);
+
+  const leveragePercent = await marginAccounts.leveragePercent();
+  const borrowPercent = leveragePercent.sub(100);
+
+  const holdingsInUse = leveragePercent.mul(borrowTotal).div(borrowPercent);
+
+  if (holdingTotal.gt(holdingsInUse)) {
+    const availableToLever = holdingTotal.sub(holdingsInUse);
+    return availableToLever.mul(leveragePercent.sub(PERCENTAGE_BUFFER)).div(100).sub(availableToLever).toString();
+  } else {
+    return '0';
+  }
+}
+
 export async function approveToFund(
   tokenAddress: string,
   amount: string,
@@ -183,4 +204,15 @@ export async function overCollateralizedBorrow(
 ): Promise<void> {
   const marginRouter = getMarginRouterContract(chainId, provider);
   await marginRouter.crossOvercollateralizedBorrow(depositToken, depositAmount, borrowToken, withdrawAmount);
+}
+
+export async function viewCurrentPriceInPeg(
+  tokenAddress: string,
+  amount: string,
+  chainId: ChainId,
+  provider: Provider
+): Promise<BigNumber> {
+  const crossMarginAddress = getAddresses(chainId).CrossMarginTrading;
+  const priceController = new Contract(crossMarginAddress, PriceAware.abi, provider);
+  return priceController.viewCurrentPriceInPeg(tokenAddress, amount);
 }
