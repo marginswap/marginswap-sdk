@@ -8,9 +8,9 @@ import { Provider, TransactionReceipt } from '@ethersproject/abstract-provider';
 import { getAddresses } from '../addresses';
 import { ChainId } from '../constants';
 import * as _ from 'lodash';
-import { parseFixed } from '@ethersproject/bignumber';
 import { getIERC20Token } from './IERC20Token';
-import BigNumber from "bignumber.js";
+import { BigNumber } from '@ethersproject/bignumber';
+// import BigNumber from 'bignumber.js';
 
 const PERCENTAGE_BUFFER = 3;
 
@@ -19,7 +19,8 @@ type amount = BigNumber;
 export type Balances = Record<token, amount>;
 
 export function getCrossMarginTrading(chainId: ChainId, provider: Provider): Contract {
-  return new Contract(getAddresses(chainId).CrossMarginTrading, CrossMarginTrading.abi, provider);
+  const address = getAddresses(chainId).CrossMarginTrading;
+  return new Contract(address, CrossMarginTrading.abi, provider);
 }
 
 export function getMarginRouterContract(chainId: ChainId, provider: Signer | Provider): Contract {
@@ -114,27 +115,25 @@ export async function crossWithdraw(
   return await marginRouter.crossWithdraw(tokenAddress, amount);
 }
 
-export async function borrowable(
-  traderAddress: string,
-  tokenAddress: string,
-  chainId: ChainId,
-  provider: Provider
-): Promise<BigNumber> {
+export async function borrowableInPeg(traderAddress: string, chainId: ChainId, provider: Provider): Promise<string> {
   const marginTrader = getCrossMarginTrading(chainId, provider);
-  const holdingTotal = new BigNumber((await getAccountHoldingTotal(traderAddress, chainId, provider)).toString());
-  const borrowTotal = new BigNumber((await getAccountBorrowTotal(traderAddress, chainId, provider)).toString());
+  const holdingTotal = await getAccountHoldingTotal(traderAddress, chainId, provider);
+  const borrowTotal = await getAccountBorrowTotal(traderAddress, chainId, provider);
 
   const crossMarginAddress = getAddresses(chainId).CrossMarginTrading;
   const marginAccounts = new Contract(crossMarginAddress, CrossMarginAccounts.abi, provider);
-  const priceManager = new Contract(crossMarginAddress, PriceAware.abi, provider);
 
-  const leveragePercent = (await marginAccounts.leveragePercent()).toNumber();
-  const levRatio = (leveragePercent - 100 - PERCENTAGE_BUFFER) / leveragePercent;
+  const leveragePercent = await marginAccounts.leveragePercent();
+  const borrowPercent = leveragePercent.sub(100);
 
-  const E18 = new BigNumber(10).pow(18);
-  let currentPriceE18 = (await priceManager.viewCurrentPriceInPeg(tokenAddress, E18.toString()));
+  const holdingsInUse = leveragePercent.mul(borrowTotal).div(borrowPercent);
 
-  return holdingTotal.times(E18).times(levRatio).div(borrowTotal.plus(1)).div(new BigNumber(currentPriceE18.toString()));
+  if (holdingTotal.gt(holdingsInUse)) {
+    const availableToLever = holdingTotal.sub(holdingsInUse);
+    return availableToLever.mul(leveragePercent.sub(PERCENTAGE_BUFFER)).div(100).sub(availableToLever).toString();
+  } else {
+    return '0';
+  }
 }
 
 export async function approveToFund(
@@ -159,4 +158,15 @@ export async function getTokenAllowances(
       return tokenContract.allowance(ownerAddress, getAddresses(chainId).Fund);
     })
   );
+}
+
+export async function viewCurrentPriceInPeg(
+  tokenAddress: string,
+  amount: string,
+  chainId: ChainId,
+  provider: Provider
+): Promise<BigNumber> {
+  const crossMarginAddress = getAddresses(chainId).CrossMarginTrading;
+  const priceController = new Contract(crossMarginAddress, PriceAware.abi, provider);
+  return priceController.viewCurrentPriceInPeg(tokenAddress, amount);
 }
