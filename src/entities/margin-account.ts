@@ -124,6 +124,32 @@ export async function crossBorrow(
   return await marginRouter.crossBorrow(tokenAddress, amount);
 }
 
+export async function borrowable(
+  traderAddress: string,
+  tokenAddress: string,
+  chainId: ChainId,
+  provider: Provider
+): Promise<BigNumber> {
+  const holdingTotal = BigNumber.from((await getAccountHoldingTotal(traderAddress, chainId, provider)).toString());
+  const borrowTotal = BigNumber.from((await getAccountBorrowTotal(traderAddress, chainId, provider)).toString());
+
+  const crossMarginAddress = getAddresses(chainId).CrossMarginTrading;
+  const marginAccounts = new Contract(crossMarginAddress, CrossMarginAccounts.abi, provider);
+  const priceManager = new Contract(crossMarginAddress, PriceAware.abi, provider);
+
+  const leveragePercent = (await marginAccounts.leveragePercent()).toNumber();
+  const levRatio = (leveragePercent - 100 - PERCENTAGE_BUFFER) / leveragePercent;
+
+  const E18 = BigNumber.from(10).pow(18);
+  const currentPriceE18 = await priceManager.viewCurrentPriceInPeg(tokenAddress, E18.toString());
+
+  return holdingTotal
+    .mul(1000)
+    .mul(Math.round(levRatio * Math.pow(10, 15)))
+    .div(borrowTotal.add(1))
+    .div(BigNumber.from(currentPriceE18.toString()));
+}
+
 export async function borrowableInPeg(traderAddress: string, chainId: ChainId, provider: Provider): Promise<string> {
   const holdingTotal = await getAccountHoldingTotal(traderAddress, chainId, provider);
   const borrowTotal = await getAccountBorrowTotal(traderAddress, chainId, provider);
