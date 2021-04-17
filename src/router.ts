@@ -86,8 +86,11 @@ export abstract class Router {
     invariant(!(etherIn && etherOut), 'ETHER_IN_OUT');
     invariant(!('ttl' in options) || options.ttl > 0, 'TTL');
 
+    const ZERO_HEX = `0x${'0'.repeat(64)}`;
+
     const ammPath = trade.route.pairs.map(pair => pair.amm);
-    const zeroHex = encodeAMMPath(ammPath);
+    const encodedAmmPath = encodeAMMPath(ammPath);
+
     const to: string = validateAndParseAddress(options.recipient);
     const amountIn: string = toHex(trade.maximumAmountIn(options.allowedSlippage));
     const amountOut: string = toHex(trade.minimumAmountOut(options.allowedSlippage));
@@ -105,36 +108,36 @@ export abstract class Router {
         if (etherIn && !options.marginTrade) {
           methodName = 'swapExactETHForTokens';
           // (uint amountOutMin, bytes32 amms, address[] calldata path, address to, uint deadline)
-          args = [amountOut, zeroHex, path];
+          args = [amountOut, encodedAmmPath, path];
           value = amountIn;
         } else if (etherOut && !options.marginTrade) {
           methodName = 'swapExactTokensForETH';
           // (uint amountIn, uint amountOutMin, bytes32 amms, address[] calldata path, address to, uint deadline)
-          args = [amountIn, amountOut, zeroHex, path];
-          value = zeroHex;
+          args = [amountIn, amountOut, encodedAmmPath, path];
+          value = ZERO_HEX;
         } else {
           methodName = 'swapExactTokensForTokens';
           // (uint amountIn, uint amountOutMin, bytes32 amms, ddress[] calldata path, address to, uint deadline)
-          args = [amountIn, amountOut, zeroHex, path];
-          value = zeroHex;
+          args = [amountIn, amountOut, encodedAmmPath, path];
+          value = ZERO_HEX;
         }
         break;
       case TradeType.EXACT_OUTPUT:
         if (etherIn && !options.marginTrade) {
           methodName = 'swapETHForExactTokens';
           // (uint amountOut, bytes32 amms, address[] calldata path, address to, uint deadline)
-          args = [amountOut, zeroHex, path];
+          args = [amountOut, encodedAmmPath, path];
           value = amountIn;
         } else if (etherOut && !options.marginTrade) {
           methodName = 'swapTokensForExactETH';
           // (uint amountOut, uint amountInMax, bytes32 amms, address[] calldata path, address to, uint deadline)
-          args = [amountOut, amountIn, zeroHex, path];
-          value = zeroHex;
+          args = [amountOut, amountIn, encodedAmmPath, path];
+          value = ZERO_HEX;
         } else {
           methodName = 'swapTokensForExactTokens';
           // (uint amountOut, uint amountInMax, address[] calldata path, address to, uint deadline)
-          args = [amountOut, amountIn, zeroHex, path];
-          value = zeroHex;
+          args = [amountOut, amountIn, encodedAmmPath, path];
+          value = ZERO_HEX;
         }
         break;
     }
