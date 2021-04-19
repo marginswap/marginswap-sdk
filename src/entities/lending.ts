@@ -10,7 +10,6 @@ import { Balances, getCrossMarginTrading } from './margin-account';
 import { getIERC20Token } from './IERC20Token';
 
 function getLending(chainId: ChainId, provider: BaseProvider) {
-  const networkName = getNetwork(chainId).name;
   return new Contract(getAddresses(chainId).Lending, LendingCore.abi, provider);
 }
 
@@ -103,4 +102,14 @@ export async function withdrawHourlyBond(
 ): Promise<TransactionReceipt> {
   const lending = getLending(chainId, provider);
   return lending.withdrawHourlyBond(token, amount);
+}
+
+export async function totalLendingAvailable(
+  tokenAddress: string,
+  chainId = ChainId.MAINNET,
+  provider = getDefaultProvider(getNetwork(chainId))
+): Promise<TransactionReceipt> {
+  const lending = getLending(chainId, provider);
+  const { totalLending, totalBorrowed } = await lending.lendingMeta(tokenAddress);
+  return totalLending.sub(totalBorrowed);
 }
