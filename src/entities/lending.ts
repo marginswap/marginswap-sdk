@@ -6,8 +6,7 @@ import { BaseProvider, getDefaultProvider, TransactionReceipt } from '@etherspro
 import { ChainId } from '../constants';
 import * as _ from 'lodash';
 import { getAddresses } from '../addresses';
-import { Balances, getCrossMarginTrading } from './margin-account';
-import { getIERC20Token } from './IERC20Token';
+import { Balances } from './margin-account';
 
 function getLending(chainId: ChainId, provider: BaseProvider) {
   return new Contract(getAddresses(chainId).Lending, LendingCore.abi, provider);
@@ -112,4 +111,18 @@ export async function totalLendingAvailable(
   const lending = getLending(chainId, provider);
   const { totalLending, totalBorrowed } = await lending.lendingMeta(tokenAddress);
   return totalLending.sub(totalBorrowed);
+}
+
+/**
+ * Update hourly bond interest
+ * @param token issuer token address
+ * @param chainId chain of the token
+ * @param provider provider used to fetch the token
+ */
+export async function updateBondInterest(
+  token: string,
+  chainId = ChainId.MAINNET,
+  provider = getDefaultProvider(getNetwork(chainId))
+): Promise<number> {
+  return getLending(chainId, provider).updateHourlyYield(token);
 }
