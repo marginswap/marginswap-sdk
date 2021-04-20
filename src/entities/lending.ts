@@ -112,3 +112,17 @@ export async function totalLendingAvailable(
   const { totalLending, totalBorrowed } = await lending.lendingMeta(tokenAddress);
   return totalLending.sub(totalBorrowed);
 }
+
+/**
+ * Update hourly bond interest
+ * @param token issuer token address
+ * @param chainId chain of the token
+ * @param provider provider used to fetch the token
+ */
+export async function updateBondInterest(
+  token: string,
+  chainId = ChainId.MAINNET,
+  provider = getDefaultProvider(getNetwork(chainId))
+): Promise<number> {
+  return getLending(chainId, provider).updateHourlyYield(token);
+}
