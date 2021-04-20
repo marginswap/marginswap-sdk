@@ -216,3 +216,13 @@ export async function viewCurrentPriceInPeg(
   const priceController = new Contract(crossMarginAddress, PriceAware.abi, provider);
   return priceController.viewCurrentPriceInPeg(tokenAddress, amount);
 }
+
+export async function crossDepositETH(amount: string, chainId: ChainId, provider: Provider): Promise<void> {
+  const marginRouter = getMarginRouterContract(chainId, provider);
+  await marginRouter.crossDepositETH({ value: amount });
+}
+
+export async function crossWithdrawETH(amount: string, chainId: ChainId, provider: Provider): Promise<void> {
+  const marginRouter = getMarginRouterContract(chainId, provider);
+  await marginRouter.crossWithdrawETH(amount);
+}
