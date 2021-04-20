@@ -15,7 +15,7 @@ yarn link
 cd ../../marginswap-sdk
 
 yarn link @marginswap/core-abi
-# call it again
+yarn build
 yarn link
 
 cd ../marginswap-interface
