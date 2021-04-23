@@ -126,3 +126,19 @@ export async function updateBondInterest(
 ): Promise<number> {
   return getLending(chainId, provider).updateHourlyYield(token);
 }
+
+/**
+ * Get current interest rate for borrow
+ * @param tokens addresses of the issuers on the chain
+ * @param chainId chain of the token
+ * @param provider provider used to fetch the token
+ */
+ export async function getBorrowInterestRates(
+  tokens: string[],
+  chainId = ChainId.MAINNET,
+  provider = getDefaultProvider(getNetwork(chainId))
+): Promise<Balances> {
+  const lending = getLending(chainId, provider);
+  const requests = tokens.map(token => lending.viewBorrowAPRPer10k(token));
+  return Promise.all(requests).then(interestRates => _.zipObject(tokens, interestRates));
+}
