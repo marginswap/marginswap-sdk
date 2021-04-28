@@ -11,7 +11,7 @@ import * as _ from 'lodash';
 import { getIERC20Token } from './IERC20Token';
 import { BigNumber } from '@ethersproject/bignumber';
 
-const PERCENTAGE_BUFFER = 3;
+const PERCENTAGE_BUFFER = 4;
 
 type token = string;
 type amount = BigNumber;
@@ -167,6 +167,27 @@ export async function borrowableInPeg(traderAddress: string, chainId: ChainId, p
     return availableToLever.mul(leveragePercent.sub(PERCENTAGE_BUFFER)).div(100).sub(availableToLever).toString();
   } else {
     return '0';
+  }
+}
+
+export async function withdrawableInPeg(traderAddress: string, chainId: ChainId, provider: Provider): Promise<string> {
+  const holdingTotal = await getAccountHoldingTotal(traderAddress, chainId, provider);
+  const borrowTotal = await getAccountBorrowTotal(traderAddress, chainId, provider);
+
+  if (borrowTotal.gt(0)) {
+    const crossMarginAddress = getAddresses(chainId).CrossMarginTrading;
+    const marginAccounts = new Contract(crossMarginAddress, CrossMarginAccounts.abi, provider);
+
+    const leveragePercent = await marginAccounts.leveragePercent();
+
+    const minHoldingLevel = borrowTotal.mul(leveragePercent.add(PERCENTAGE_BUFFER)).div(leveragePercent.sub(100));
+    if (holdingTotal.gt(minHoldingLevel)) {
+      return holdingTotal.sub(minHoldingLevel).toString();
+    } else {
+      return '0';
+    }
+  } else {
+    return holdingTotal.toString();
   }
 }
 

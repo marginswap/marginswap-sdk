@@ -133,7 +133,7 @@ export async function updateBondInterest(
  * @param chainId chain of the token
  * @param provider provider used to fetch the token
  */
- export async function getBorrowInterestRates(
+export async function getBorrowInterestRates(
   tokens: string[],
   chainId = ChainId.MAINNET,
   provider = getDefaultProvider(getNetwork(chainId))
