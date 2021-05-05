@@ -15,6 +15,7 @@ export enum ChainId {
   HARMONY = 1666600000,
   FANTOM = 250,
   BSC = 56,
+  AVALANCHE = 43114,
   LOCAL = 31337
 }
 
