@@ -9,6 +9,12 @@ export enum ChainId {
   RINKEBY = 4,
   GÖRLI = 5,
   KOVAN = 42,
+  MATIC = 137,
+  XDAI = 100,
+  HECO = 128,
+  HARMONY = 1666600000,
+  FANTOM = 250,
+  BSC = 56,
   LOCAL = 31337
 }
 
