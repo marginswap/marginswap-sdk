@@ -6,6 +6,10 @@ import LiquidityMiningReward from '@marginswap/core-abi/artifacts/contracts/Liqu
 import { Provider, TransactionReceipt } from '@ethersproject/abstract-provider';
 import { TokenAmount } from './fractions';
 import { BigNumber } from '@ethersproject/bignumber';
+import UniswapV2Pair from '@uniswap/v2-core/build/UniswapV2Pair.json';
+
+const LIQUIDITY_TOKEN = '0x9d640080af7c81911d87632a7d09cc4ab6b133ac';
+const STAKING_CONTRACT = '0xEfa8122994c742566DB4478d25aD1eC3DF07f477';
 
 export enum Duration {
   ONE_WEEK,
@@ -54,4 +58,34 @@ export async function accruedReward(stakingContract: Contract, address: string):
 
 export async function withdrawReward(stakingContract: Contract): Promise<TransactionReceipt> {
   return stakingContract.withdrawReward();
+}
+
+export async function getLiquidityAPRPerWeight(lmr: Contract, provider: Provider): Promise<number> {
+  const uniswapPair = new Contract(LIQUIDITY_TOKEN, UniswapV2Pair.abi, provider);
+  const MFIReserve = (await uniswapPair.getReserves())[1];
+
+  const totalSupply = await uniswapPair.totalSupply();
+  const totalReserveInMFI = MFIReserve.mul(2);
+
+  const rewardRate = await lmr.totalCurrentRewardPerBlock();
+  const totalWeight = await lmr.totalCurrentWeights();
+
+  const rewardPerMFIStakedPerYear = rewardRate
+    .mul(10000 * 365 * 24 * 60 * 4)
+    .div(totalReserveInMFI.mul(totalWeight).div(totalSupply));
+
+  return rewardPerMFIStakedPerYear.toNumber() / (10000 / 100);
+}
+
+export async function getMFIAPRPerWeight(stakingContract: Contract, provider: Provider): Promise<number> {
+  const rewardRate = await stakingContract.totalCurrentRewardPerBlock();
+  const totalWeight = await stakingContract.totalCurrentWeights();
+
+  return (
+    rewardRate
+      .mul(10000 * 367 * 24 * 60 * 4)
+      .div(totalWeight)
+      .toNumber() /
+    (10000 / 100)
+  );
 }
