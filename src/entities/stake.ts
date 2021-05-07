@@ -89,3 +89,9 @@ export async function getMFIAPRPerWeight(stakingContract: Contract, provider: Pr
     (10000 / 100)
   );
 }
+
+export async function getTimeUntilLockEnd(stakingContract: Contract, address: string): Promise<number> {
+  const lockEnd = (await stakingContract.stakeAccounts(address)).lockEnd.toNumber();
+  const currentTime = Math.floor(Date.now() / 1000);
+  return Math.max(0, lockEnd - currentTime);
+}
