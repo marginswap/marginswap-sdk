@@ -7,6 +7,7 @@ export type DeploymentAddresses = {
   Fund: string;
   IncentiveDistribution: string;
   Lending: string;
+  MFIStaking: string;
   LiquidityMiningReward: string;
   MarginRouter: string;
   Peg: string;

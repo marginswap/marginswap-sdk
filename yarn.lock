@@ -1289,7 +1289,7 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
-"@marginswap/core-abi@1.2.2":
+"@marginswap/core-abi@^1.2.2":
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@marginswap/core-abi/-/core-abi-1.2.2.tgz#cb4c96a86a806febeb50c1912e7626e6f0f30167"
   integrity sha512-Y6RWLn1xctR964M4+Au9JNq9slEJQbaOZ2CUYkmI8g9XoIPxhjNIcJyXG1LX4a9WTun/BI0q6GfxygW4gLoiig==
