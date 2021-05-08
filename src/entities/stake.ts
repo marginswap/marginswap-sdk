@@ -1,5 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
-import { getAddresses } from 'addresses';
+import { getAddresses } from '../addresses';
 import { ChainId } from '../constants';
 import MFIStaking from '@marginswap/core-abi/artifacts/contracts/MFIStaking.sol/MFIStaking.json';
 import LiquidityMiningReward from '@marginswap/core-abi/artifacts/contracts/LiquidityMiningReward.sol/LiquidityMiningReward.json';
