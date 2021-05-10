@@ -72,7 +72,7 @@ export async function getLiquidityAPRPerWeight(lmr: Contract, provider: Provider
 
   const rewardPerMFIStakedPerYear = rewardRate
     .mul(10000 * 365 * 24 * 60 * 4)
-    .div(totalReserveInMFI.mul(totalWeight).div(totalSupply));
+    .div(totalReserveInMFI.mul(totalWeight).div(totalSupply.add(1)).add(1));
 
   return rewardPerMFIStakedPerYear.toNumber() / (10000 / 100);
 }
@@ -84,7 +84,7 @@ export async function getMFIAPRPerWeight(stakingContract: Contract, provider: Pr
   return (
     rewardRate
       .mul(10000 * 367 * 24 * 60 * 4)
-      .div(totalWeight)
+      .div(totalWeight.add(1))
       .toNumber() /
     (10000 / 100)
   );
