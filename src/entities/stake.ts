@@ -4,7 +4,6 @@ import { ChainId } from '../constants';
 import MFIStaking from '@marginswap/core-abi/artifacts/contracts/MFIStaking.sol/MFIStaking.json';
 import LiquidityMiningReward from '@marginswap/core-abi/artifacts/contracts/LiquidityMiningReward.sol/LiquidityMiningReward.json';
 import { Provider, TransactionReceipt } from '@ethersproject/abstract-provider';
-import { TokenAmount } from './fractions';
 import { BigNumber } from '@ethersproject/bignumber';
 import UniswapV2Pair from '@uniswap/v2-core/build/UniswapV2Pair.json';
 
@@ -35,14 +34,14 @@ export function getLiquidityMiningReward(chainId: ChainId, provider: Provider): 
 
 export async function stake(
   stakingContract: Contract,
-  amount: TokenAmount,
+  amount: string,
   duration: Duration
 ): Promise<TransactionReceipt> {
-  return stakingContract.stake(amount.toExact(), durations[duration].toString());
+  return stakingContract.stake(amount, durations[duration].toString());
 }
 
-export async function withdrawStake(stakingContract: Contract, amount: TokenAmount): Promise<TransactionReceipt> {
-  return stakingContract.withdrawStake(amount.toExact());
+export async function withdrawStake(stakingContract: Contract, amount: string): Promise<TransactionReceipt> {
+  return stakingContract.withdrawStake(amount);
 }
 
 export async function canWithdraw(stakingContract: Contract, address: string): Promise<boolean> {
