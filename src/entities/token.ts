@@ -93,12 +93,19 @@ export const WETH = {
   ),
   [ChainId.FANTOM]: new Token(ChainId.KOVAN, '0xd0A1E359811322d97991E03f863a0C30C2cF029C', 18, 'WETH', 'Wrapped Ether'),
   [ChainId.BSC]: new Token(ChainId.KOVAN, '0xd0A1E359811322d97991E03f863a0C30C2cF029C', 18, 'WETH', 'Wrapped Ether'),
+  // [ChainId.AVALANCHE]: new Token(
+  //   ChainId.AVALANCHE,
+  //   '0xd0A1E359811322d97991E03f863a0C30C2cF029C',
+  //   18,
+  //   'WETH',
+  //   'Wrapped Ether'
+  // ),
   [ChainId.AVALANCHE]: new Token(
     ChainId.AVALANCHE,
-    '0xd0A1E359811322d97991E03f863a0C30C2cF029C',
+    '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7',
     18,
-    'WETH',
-    'Wrapped Ether'
+    'WAVAX',
+    'Wrapped AVAX'
   ),
   [ChainId.LOCAL]: new Token(ChainId.LOCAL, '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', 18, 'WETH', 'Wrapped Ether')
 };
