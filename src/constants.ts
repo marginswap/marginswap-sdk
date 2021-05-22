@@ -52,9 +52,8 @@ export const ammsPerChain = {
   [ChainId.FUJI]: [AMMs.PANGOLIN, AMMs.BAGUETTE],
   [ChainId.ROPSTEN]: [AMMs.UNI, AMMs.SUSHI],
   [ChainId.RINKEBY]: [AMMs.UNI, AMMs.SUSHI],
-  [ChainId.GÖRLI]: [AMMs.UNI, AMMs.SUSHI],
-
-}
+  [ChainId.GÖRLI]: [AMMs.UNI, AMMs.SUSHI]
+};
 
 export const ammOrder: Record<AMMs, number> = {
   [AMMs.UNI]: 0,
