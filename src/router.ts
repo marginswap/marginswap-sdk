@@ -60,7 +60,7 @@ function toHex(currencyAmount: CurrencyAmount) {
 }
 
 function encodeAMMPath(ammPath: AMMs[]) {
-  const encoded = hexlify(ammPath.map((amm: AMMs) => (amm == AMMs.UNI ? 0 : 1)));
+  const encoded = hexlify(ammPath.map((amm: AMMs) => (amm === AMMs.UNI || amm === AMMs.PANGOLIN ? 0 : 1)));
   return `${encoded}${'0'.repeat(64 + 2 - encoded.length)}`;
 }
 
