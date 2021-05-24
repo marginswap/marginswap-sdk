@@ -9,6 +9,14 @@ export enum ChainId {
   RINKEBY = 4,
   GÖRLI = 5,
   KOVAN = 42,
+  FUJI = 43113,
+  MATIC = 137,
+  XDAI = 100,
+  HECO = 128,
+  HARMONY = 1666600000,
+  FANTOM = 250,
+  BSC = 56,
+  AVALANCHE = 43114,
   LOCAL = 31337
 }
 
@@ -31,22 +39,48 @@ export enum Rounding {
 
 export enum AMMs {
   UNI,
-  SUSHI
+  SUSHI,
+  PANGOLIN,
+  BAGUETTE
 }
+
+export const ammsPerChain = {
+  [ChainId.MAINNET]: [AMMs.UNI, AMMs.SUSHI],
+  [ChainId.KOVAN]: [AMMs.UNI, AMMs.SUSHI],
+  [ChainId.LOCAL]: [AMMs.UNI, AMMs.SUSHI],
+  [ChainId.AVALANCHE]: [AMMs.PANGOLIN, AMMs.BAGUETTE],
+  [ChainId.FUJI]: [AMMs.PANGOLIN, AMMs.BAGUETTE],
+  [ChainId.ROPSTEN]: [AMMs.UNI, AMMs.SUSHI],
+  [ChainId.RINKEBY]: [AMMs.UNI, AMMs.SUSHI],
+  [ChainId.GÖRLI]: [AMMs.UNI, AMMs.SUSHI]
+};
+
+export const ammOrder: Record<AMMs, number> = {
+  [AMMs.UNI]: 0,
+  [AMMs.SUSHI]: 1,
+  [AMMs.PANGOLIN]: 0,
+  [AMMs.BAGUETTE]: 1
+};
 
 export const factoryAddresses: Record<AMMs, string> = {
   [AMMs.UNI]: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
-  [AMMs.SUSHI]: '0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac'
+  [AMMs.SUSHI]: '0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac',
+  [AMMs.PANGOLIN]: '0xefa94DE7a4656D787667C749f7E1223D71E9FD88',
+  [AMMs.BAGUETTE]: '0xBB6e8C136ca537874a6808dBFC5DaebEd9a57554'
 };
 
 export const amms: Record<string, AMMs> = {
   [factoryAddresses[AMMs.UNI]]: AMMs.UNI,
-  [factoryAddresses[AMMs.SUSHI]]: AMMs.SUSHI
+  [factoryAddresses[AMMs.SUSHI]]: AMMs.SUSHI,
+  [factoryAddresses[AMMs.PANGOLIN]]: AMMs.PANGOLIN,
+  [factoryAddresses[AMMs.BAGUETTE]]: AMMs.BAGUETTE
 };
 
 export const initCodeHashes: Record<string, string> = {
   [factoryAddresses[AMMs.UNI]]: '0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f',
-  [factoryAddresses[AMMs.SUSHI]]: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303'
+  [factoryAddresses[AMMs.SUSHI]]: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+  [factoryAddresses[AMMs.PANGOLIN]]: '0x40231f6b438bce0797c9ada29b718a87ea0a5cea3fe9a771abdd76bd41a3e545',
+  [factoryAddresses[AMMs.BAGUETTE]]: '0x81dbf51ab39dc634785936a3b34def28bf8007e6dfa30d4284c4b8547cb47a51'
 };
 
 export const MINIMUM_LIQUIDITY = JSBI.BigInt(1000);
