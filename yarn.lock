@@ -1289,10 +1289,10 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
-"@marginswap/core-abi@^1.2.6":
-  version "1.2.6"
-  resolved "https://registry.yarnpkg.com/@marginswap/core-abi/-/core-abi-1.2.6.tgz#354ae5cffded5097a72a77350ae22a5deae6f23b"
-  integrity sha512-mnC92vef2SRC7Zn/9ytMRskILvedvHA4xGqrJqVJldh1DfOsHIPxpv6fFJrw6mXyDoBmi644NATDn6oG0Y+ezQ==
+"@marginswap/core-abi@^1.2.7":
+  version "1.2.7"
+  resolved "https://registry.yarnpkg.com/@marginswap/core-abi/-/core-abi-1.2.7.tgz#05eda28ac06e4c33909b947029922521777cafc9"
+  integrity sha512-D4pKKvZwhkKDjRkwoAy5/p5lcW51FYCN5qYiMlHxE/YTzSn8E6vTfUGjQ5eFYH+N/+MVSnn/FfdjxPLEis3hCA==
 
 "@nodelib/fs.scandir@2.1.4":
   version "2.1.4"
