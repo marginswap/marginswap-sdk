@@ -94,3 +94,7 @@ export async function getTimeUntilLockEnd(stakingContract: Contract, address: st
   const currentTime = Math.floor(Date.now() / 1000);
   return Math.max(0, lockEnd - currentTime);
 }
+
+export async function getStakedBalance(stakingContract: Contract, addresss: string): Promise<BigNumber> {
+  return (await stakingContract.stakeAccounts(address)).stakeAmount;
+}
