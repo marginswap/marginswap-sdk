@@ -22,12 +22,19 @@ const durations: Record<Duration, number> = {
   [Duration.THREE_MONTHS]: 60 * 24 * 90
 };
 
-export function getMFIStaking(chainId: ChainId, provider: Provider): Contract {
+export function getMFIStaking(chainId: ChainId | undefined, provider: Provider | undefined): Contract | undefined {
+  if (!chainId || !provider) return undefined;
+
   const address = getAddresses(chainId).MFIStaking;
   return new Contract(address, MFIStaking.abi, provider);
 }
 
-export function getLiquidityMiningReward(chainId: ChainId, provider: Provider): Contract {
+export function getLiquidityMiningReward(
+  chainId: ChainId | undefined,
+  provider: Provider | undefined
+): Contract | undefined {
+  if (!chainId || !provider) return undefined;
+
   const address = getAddresses(chainId).LiquidityMiningReward;
   return new Contract(address, LiquidityMiningReward.abi, provider);
 }
@@ -37,7 +44,8 @@ export async function stake(
   amount: string,
   duration: Duration
 ): Promise<TransactionReceipt> {
-  return stakingContract.stake(amount, durations[duration].toString());
+  const timeframe = durations[duration].toString();
+  return stakingContract.stake(amount, timeframe);
 }
 
 export async function withdrawStake(stakingContract: Contract, amount: string): Promise<TransactionReceipt> {
@@ -48,10 +56,14 @@ export async function canWithdraw(stakingContract: Contract, address: string): P
   const stakeAccount = await stakingContract.stakeAccounts(address);
 
   const currentTime = Math.floor(Date.now() / 1000);
-  return currentTime >= stakeAccount.lockEnd && (await accruedReward(stakingContract, address)).gt(0);
+  return currentTime >= stakeAccount.lockEnd && ((await accruedReward(stakingContract, address))?.gt(0) ?? false);
 }
 
-export async function accruedReward(stakingContract: Contract, address: string): Promise<BigNumber> {
+export async function accruedReward(
+  stakingContract: Contract | undefined,
+  address: string | undefined
+): Promise<BigNumber | undefined> {
+  if (!stakingContract || !address) return undefined;
   return stakingContract.viewRewardAmount(address);
 }
 
@@ -59,7 +71,12 @@ export async function withdrawReward(stakingContract: Contract): Promise<Transac
   return stakingContract.withdrawReward();
 }
 
-export async function getLiquidityAPRPerWeight(lmr: Contract, provider: Provider): Promise<number> {
+export async function getLiquidityAPRPerWeight(
+  lmr: Contract | undefined,
+  provider: Provider | undefined
+): Promise<number | undefined> {
+  if (!lmr || !provider) return undefined;
+
   const uniswapPair = new Contract(LIQUIDITY_TOKEN, UniswapV2Pair.abi, provider);
   const MFIReserve = (await uniswapPair.getReserves())[1];
 
@@ -76,7 +93,12 @@ export async function getLiquidityAPRPerWeight(lmr: Contract, provider: Provider
   return rewardPerMFIStakedPerYear.toNumber() / (10000 / 100);
 }
 
-export async function getMFIAPRPerWeight(stakingContract: Contract, provider: Provider): Promise<number> {
+export async function getMFIAPRPerWeight(
+  stakingContract: Contract | undefined,
+  period: number
+): Promise<number | undefined> {
+  if (!stakingContract) return undefined;
+
   const rewardRate = await stakingContract.totalCurrentRewardPerBlock();
   const totalWeight = await stakingContract.totalCurrentWeights();
 
@@ -89,8 +111,20 @@ export async function getMFIAPRPerWeight(stakingContract: Contract, provider: Pr
   );
 }
 
-export async function getTimeUntilLockEnd(stakingContract: Contract, address: string): Promise<number> {
+export async function getTimeUntilLockEnd(
+  stakingContract: Contract | undefined,
+  address: string | undefined
+): Promise<number | undefined> {
+  if (!stakingContract || !address) return undefined;
   const lockEnd = (await stakingContract.stakeAccounts(address)).lockEnd.toNumber();
   const currentTime = Math.floor(Date.now() / 1000);
   return Math.max(0, lockEnd - currentTime);
+}
+
+export async function getStakedBalance(
+  stakingContract: Contract | undefined,
+  address: string | undefined
+): Promise<BigNumber | undefined> {
+  if (!stakingContract || !address) return undefined;
+  return (await stakingContract.stakeAccounts(address)).stakeAmount;
 }
