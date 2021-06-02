@@ -1,4 +1,4 @@
-import { TradeType, AMMs } from './constants';
+import { TradeType, AMMs, ammOrder } from './constants';
 import invariant from 'tiny-invariant';
 import { validateAndParseAddress } from './utils';
 import { CurrencyAmount, ETHER, Percent, Trade } from './entities';
@@ -60,7 +60,7 @@ function toHex(currencyAmount: CurrencyAmount) {
 }
 
 function encodeAMMPath(ammPath: AMMs[]) {
-  const encoded = hexlify(ammPath.map((amm: AMMs) => (amm === AMMs.UNI || amm === AMMs.PANGOLIN ? 0 : 1)));
+  const encoded = hexlify(ammPath.map((amm: AMMs) => ammOrder[amm]));
   return `${encoded}${'0'.repeat(64 + 2 - encoded.length)}`;
 }
 

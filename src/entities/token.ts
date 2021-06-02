@@ -81,25 +81,24 @@ export const WETH = {
   [ChainId.GÖRLI]: new Token(ChainId.GÖRLI, '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6', 18, 'WETH', 'Wrapped Ether'),
   [ChainId.KOVAN]: new Token(ChainId.KOVAN, '0xd0A1E359811322d97991E03f863a0C30C2cF029C', 18, 'WETH', 'Wrapped Ether'),
   [ChainId.FUJI]: new Token(ChainId.FUJI, '0xd00ae08403B9bbb9124bB305C09058E32C39A48c', 18, 'WAVAX', 'Wrapped AVAX'),
-  [ChainId.MATIC]: new Token(ChainId.KOVAN, '0xd0A1E359811322d97991E03f863a0C30C2cF029C', 18, 'WETH', 'Wrapped Ether'),
-  [ChainId.XDAI]: new Token(ChainId.KOVAN, '0xd0A1E359811322d97991E03f863a0C30C2cF029C', 18, 'WETH', 'Wrapped Ether'),
-  [ChainId.HECO]: new Token(ChainId.KOVAN, '0xd0A1E359811322d97991E03f863a0C30C2cF029C', 18, 'WETH', 'Wrapped Ether'),
-  [ChainId.HARMONY]: new Token(
-    ChainId.KOVAN,
-    '0xd0A1E359811322d97991E03f863a0C30C2cF029C',
+  [ChainId.MATIC]: new Token(
+    ChainId.MATIC,
+    '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
     18,
-    'WETH',
-    'Wrapped Ether'
+    'WMATIC',
+    'Wrapped Matic'
   ),
-  [ChainId.FANTOM]: new Token(ChainId.KOVAN, '0xd0A1E359811322d97991E03f863a0C30C2cF029C', 18, 'WETH', 'Wrapped Ether'),
-  [ChainId.BSC]: new Token(ChainId.KOVAN, '0xd0A1E359811322d97991E03f863a0C30C2cF029C', 18, 'WETH', 'Wrapped Ether'),
-  // [ChainId.AVALANCHE]: new Token(
-  //   ChainId.AVALANCHE,
-  //   '0xd0A1E359811322d97991E03f863a0C30C2cF029C',
-  //   18,
-  //   'WETH',
-  //   'Wrapped Ether'
-  // ),
+  [ChainId.XDAI]: new Token(ChainId.XDAI, '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d', 18, 'WXDAI', 'Wrapped xDai'),
+  [ChainId.HECO]: new Token(ChainId.HECO, '0x5545153CCFcA01fbd7Dd11C0b23ba694D9509A6F', 18, 'WHT', 'Wrapped HT'),
+  [ChainId.HARMONY]: new Token(
+    ChainId.HARMONY,
+    '0xcF664087a5bB0237a0BAd6742852ec6c8d69A27a',
+    18,
+    'WONE',
+    'Wrapped ONE'
+  ),
+  [ChainId.FANTOM]: new Token(ChainId.FANTOM, '0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83', 18, 'WFTM', 'Wrapped FTM'),
+  [ChainId.BSC]: new Token(ChainId.BSC, '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', 18, 'WBNB', 'Wrapped BNB'),
   [ChainId.AVALANCHE]: new Token(
     ChainId.AVALANCHE,
     '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7',
