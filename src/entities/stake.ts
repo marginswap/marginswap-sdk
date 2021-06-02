@@ -73,6 +73,7 @@ export async function withdrawReward(stakingContract: Contract): Promise<Transac
 
 export async function getLiquidityAPRPerWeight(
   lmr: Contract | undefined,
+  period: number,
   provider: Provider | undefined
 ): Promise<number | undefined> {
   if (!lmr || !provider) return undefined;
@@ -90,7 +91,7 @@ export async function getLiquidityAPRPerWeight(
     .mul(10000 * 365 * 24 * 60 * 4)
     .div(totalReserveInMFI.mul(totalWeight).div(totalSupply.add(1)).add(1));
 
-  return rewardPerMFIStakedPerYear.toNumber() / (10000 / 100);
+  return (rewardPerMFIStakedPerYear.toNumber() * (period + 1)) / (10000 / 100);
 }
 
 export async function getMFIAPRPerWeight(
@@ -103,10 +104,11 @@ export async function getMFIAPRPerWeight(
   const totalWeight = await stakingContract.totalCurrentWeights();
 
   return (
-    rewardRate
+    (rewardRate
       .mul(10000 * 367 * 24 * 60 * 4)
       .div(totalWeight.add(1))
-      .toNumber() /
+      .toNumber() *
+      (period + 1)) /
     (10000 / 100)
   );
 }
