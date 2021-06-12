@@ -7,6 +7,7 @@ import { ChainId } from '../constants';
 import * as _ from 'lodash';
 import { getAddresses } from '../addresses';
 import { Balances } from './margin-account';
+import { BigNumber } from '@ethersproject/bignumber';
 
 function getLending(chainId: ChainId, provider: BaseProvider) {
   return new Contract(getAddresses(chainId).Lending, LendingCore.abi, provider);
@@ -141,4 +142,9 @@ export async function getBorrowInterestRates(
   const lending = getLending(chainId, provider);
   const requests = tokens.map(token => lending.viewBorrowAPRPer10k(token));
   return Promise.all(requests).then(interestRates => _.zipObject(tokens, interestRates));
+}
+
+export async function getIncentiveRatePer10k(token: string, chainId: ChainId, provider: BaseProvider): Promise<BigNumber> {
+  const lending = getLending(chainId, provider);
+  return lending.viewYearlyIncentivePer10k(token);
 }
