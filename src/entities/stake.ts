@@ -17,6 +17,9 @@ export enum Duration {
 }
 
 const durations: Record<Duration, number> = {
+  [Duration.ONE_WEEK]: 1,
+  [Duration.ONE_MONTH]: 60,
+  [Duration.THREE_MONTHS]: 180
 };
 
 const durationFactor: Record<Duration, number> = {
