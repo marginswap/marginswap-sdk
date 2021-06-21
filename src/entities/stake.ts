@@ -17,9 +17,12 @@ export enum Duration {
 }
 
 const durations: Record<Duration, number> = {
-  [Duration.ONE_WEEK]: 60 * 24 * 7,
-  [Duration.ONE_MONTH]: 60 * 24 * 30,
-  [Duration.THREE_MONTHS]: 60 * 24 * 90
+};
+
+const durationFactor: Record<Duration, number> = {
+  [Duration.ONE_WEEK]: 1,
+  [Duration.ONE_MONTH]: 2,
+  [Duration.THREE_MONTHS]: 3
 };
 
 export function getMFIStaking(chainId: ChainId | undefined, provider: Provider | undefined): Contract | undefined {
@@ -73,7 +76,7 @@ export async function withdrawReward(stakingContract: Contract): Promise<Transac
 
 export async function getLiquidityAPRPerWeight(
   lmr: Contract | undefined,
-  period: number,
+  duration: Duration,
   provider: Provider | undefined
 ): Promise<number | undefined> {
   if (!lmr || !provider) return undefined;
@@ -91,12 +94,12 @@ export async function getLiquidityAPRPerWeight(
     .mul(10000 * 365 * 24 * 60 * 4)
     .div(totalReserveInMFI.mul(totalWeight).div(totalSupply.add(1)).add(1));
 
-  return (rewardPerMFIStakedPerYear.toNumber() * (period + 1)) / (10000 / 100);
+  return (rewardPerMFIStakedPerYear.toNumber() * durationFactor[duration]) / (10000 / 100);
 }
 
 export async function getMFIAPRPerWeight(
   stakingContract: Contract | undefined,
-  period: number
+  duration: Duration
 ): Promise<number | undefined> {
   if (!stakingContract) return undefined;
 
@@ -108,7 +111,7 @@ export async function getMFIAPRPerWeight(
       .mul(10000 * 367 * 24 * 60 * 4)
       .div(totalWeight.add(1))
       .toNumber() *
-      (period + 1)) /
+      durationFactor[duration]) /
     (10000 / 100)
   );
 }
