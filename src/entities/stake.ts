@@ -20,6 +20,9 @@ const durations: Record<Duration, number> = {
   [Duration.ONE_WEEK]: 1,
   [Duration.ONE_MONTH]: 60,
   [Duration.THREE_MONTHS]: 180
+  // [Duration.ONE_WEEK]: 60 * 24 * 7 + 1,
+  // [Duration.ONE_MONTH]: 60 * 24 * 30 + 1,
+  // [Duration.THREE_MONTHS]: 60 * 24 * 90 + 1
 };
 
 const durationFactor: Record<Duration, number> = {
