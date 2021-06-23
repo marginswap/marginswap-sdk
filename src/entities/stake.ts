@@ -16,10 +16,11 @@ export enum Duration {
   THREE_MONTHS
 }
 
+const ONE_DAY = 24 * 60 * 60;
 const durations: Record<Duration, number> = {
-  [Duration.ONE_WEEK]: 60 * 24 * 7 + 1,
-  [Duration.ONE_MONTH]: 60 * 24 * 30 + 1,
-  [Duration.THREE_MONTHS]: 60 * 24 * 90 + 1
+  [Duration.ONE_WEEK]: ONE_DAY * 7 + 1,
+  [Duration.ONE_MONTH]: ONE_DAY * 30 + 1,
+  [Duration.THREE_MONTHS]: ONE_DAY * 90 + 1
 };
 
 const durationFactor: Record<Duration, number> = {
