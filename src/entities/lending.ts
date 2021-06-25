@@ -4,10 +4,12 @@ import PriceAware from '@marginswap/core-abi/artifacts/contracts/PriceAware.sol/
 import { getNetwork } from '@ethersproject/networks';
 import { BaseProvider, getDefaultProvider, TransactionReceipt } from '@ethersproject/providers';
 import { ChainId } from '../constants';
+import { Token } from './token';
 import * as _ from 'lodash';
 import { getAddresses } from '../addresses';
 import { Balances } from './margin-account';
 import { BigNumber } from '@ethersproject/bignumber';
+import { getCoinUsdPrice } from 'utils';
 
 function getLending(chainId: ChainId, provider: BaseProvider) {
   return new Contract(getAddresses(chainId).Lending, LendingCore.abi, provider);
@@ -144,7 +146,23 @@ export async function getBorrowInterestRates(
   return Promise.all(requests).then(interestRates => _.zipObject(tokens, interestRates));
 }
 
-export async function getIncentiveRatePer10k(token: string, chainId: ChainId, provider: BaseProvider): Promise<BigNumber> {
+export async function getIncentiveRatePer10k(
+  token: string,
+  chainId: ChainId,
+  provider: BaseProvider
+): Promise<BigNumber> {
   const lending = getLending(chainId, provider);
   return lending.viewYearlyIncentivePer10k(token);
+}
+
+export async function getHoulrlyBondIncentiveInterestRates(
+  token: Token,
+  chainId: ChainId,
+  provider: BaseProvider
+): Promise<BigNumber> {
+  const tokenAPRPer10k = await getIncentiveRatePer10k(token.address, chainId, provider);
+  const TokenUSDPrice = token.coingeckoId ? await getCoinUsdPrice([token.coingeckoId]) : 0;
+  const MFIUSDPrice = await getCoinUsdPrice(['marginswap']);
+  const value = (tokenAPRPer10k.toNumber() * TokenUSDPrice * 10 ** token.decimals) / (MFIUSDPrice * 10 ** 18) / 100;
+  return BigNumber.from(value);
 }

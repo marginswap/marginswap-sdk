@@ -2,6 +2,7 @@ import invariant from 'tiny-invariant';
 import warning from 'tiny-warning';
 import JSBI from 'jsbi';
 import { getAddress } from '@ethersproject/address';
+import axios from 'axios';
 
 import { BigintIsh, ZERO, ONE, TWO, THREE, SolidityType, SOLIDITY_TYPE_MAXIMA } from './constants';
 
@@ -79,4 +80,9 @@ export function sortedInsert<T>(items: T[], add: T, maxSize: number, comparator:
     items.splice(lo, 0, add);
     return isFull ? items.pop()! : null;
   }
+}
+
+export async function getCoinUsdPrice(coinIds: string[]): Promise<number> {
+  const ids = coinIds.map(coin => coin).join(',');
+  return await axios.get(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd`);
 }
