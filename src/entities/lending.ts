@@ -156,13 +156,21 @@ export async function getIncentiveRatePer10k(
 }
 
 export async function getHoulrlyBondIncentiveInterestRates(
-  token: Token,
+  tokens: Token[],
   chainId: ChainId,
   provider: BaseProvider
-): Promise<BigNumber> {
-  const tokenAPRPer10k = await getIncentiveRatePer10k(token.address, chainId, provider);
-  const TokenUSDPrice = token.coingeckoId ? await getCoinUsdPrice([token.coingeckoId]) : 0;
-  const MFIUSDPrice = await getCoinUsdPrice(['marginswap']);
-  const value = (tokenAPRPer10k.toNumber() * TokenUSDPrice * 10 ** token.decimals) / (MFIUSDPrice * 10 ** 18) / 100;
-  return BigNumber.from(value);
+): Promise<Balances> {
+  const requests = tokens.map(async token => {
+    if (!token?.coingeckoId) return BigNumber.from(0);
+    const tokenAPRPer10k = await getIncentiveRatePer10k(token.address, chainId, provider);
+    const TokenUSDPrice = await getCoinUsdPrice([token?.coingeckoId]);
+    const MFIUSDPrice = await getCoinUsdPrice(['marginswap']);
+    const amount = BigNumber.from(
+      (tokenAPRPer10k.toNumber() * TokenUSDPrice * 10 ** token.decimals) / (MFIUSDPrice * 10 ** 18) / 100
+    );
+    return amount;
+  });
+  const addresses = tokens.map(token => token.address);
+
+  return Promise.all(requests).then(interestRates => _.zipObject(addresses, interestRates));
 }
