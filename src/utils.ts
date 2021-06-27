@@ -84,8 +84,10 @@ export function sortedInsert<T>(items: T[], add: T, maxSize: number, comparator:
 }
 
 export type CoinGeckoReponseType = {
-  [key: string]: {
-    usd: number;
+  data: {
+    [key: string]: {
+      usd: number;
+    };
   };
 };
 
