@@ -9,7 +9,8 @@ import * as _ from 'lodash';
 import { getAddresses } from '../addresses';
 import { Balances } from './margin-account';
 import { BigNumber } from '@ethersproject/bignumber';
-import { getCoinUsdPrice } from 'utils';
+import { getCoinUsdPrice, CoinGeckoReponseType } from '../utils';
+import { map } from 'lodash';
 
 function getLending(chainId: ChainId, provider: BaseProvider) {
   return new Contract(getAddresses(chainId).Lending, LendingCore.abi, provider);
@@ -155,18 +156,23 @@ export async function getIncentiveRatePer10k(
   return lending.viewYearlyIncentivePer10k(token);
 }
 
-export async function getHoulrlyBondIncentiveInterestRates(
+export async function getHourlyBondIncentiveInterestRates(
   tokens: Token[],
   chainId: ChainId,
   provider: BaseProvider
 ): Promise<Balances> {
+  const tokenUSDPrice: CoinGeckoReponseType = await getCoinUsdPrice([
+    ...tokens.map(token => token.coingeckoId || ''),
+    'marginswap'
+  ]);
   const requests = tokens.map(async token => {
     if (!token?.coingeckoId) return BigNumber.from(0);
     const tokenAPRPer10k = await getIncentiveRatePer10k(token.address, chainId, provider);
-    const TokenUSDPrice = await getCoinUsdPrice([token?.coingeckoId]);
-    const MFIUSDPrice = await getCoinUsdPrice(['marginswap']);
+    const MFIUSDPrice = tokenUSDPrice['marginswap']?.usd || 0;
     const amount = BigNumber.from(
-      (tokenAPRPer10k.toNumber() * TokenUSDPrice * 10 ** token.decimals) / (MFIUSDPrice * 10 ** 18) / 100
+      (tokenAPRPer10k.toNumber() * (tokenUSDPrice[token.coingeckoId]?.usd || 0) * 10 ** token.decimals) /
+        (MFIUSDPrice * 10 ** 18) /
+        100
     );
     return amount;
   });
