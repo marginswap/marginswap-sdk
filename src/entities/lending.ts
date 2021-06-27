@@ -169,10 +169,10 @@ export async function getHourlyBondIncentiveInterestRates(
     const tokenAPRPer10k = await getIncentiveRatePer10k(token.address, chainId, provider);
     const MFIUSDPrice: number = tokenUSDPrice?.data['marginswap'].usd || 0;
 
-    const firstCal = Math.floor(
+    const conversionFactor = Math.floor(
       1000 * ((MFIUSDPrice * (10 ** 18 / 10 ** token.decimals)) / tokenUSDPrice.data[token.coingeckoId]?.usd)
     );
-    let amount = tokenAPRPer10k.mul(firstCal).div(1000);
+    let amount = tokenAPRPer10k.mul(conversionFactor).div(1000);
 
     try {
       amount.toNumber();
