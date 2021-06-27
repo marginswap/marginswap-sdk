@@ -168,10 +168,11 @@ export async function getHourlyBondIncentiveInterestRates(
     if (!token?.coingeckoId) return BigNumber.from(0);
     const tokenAPRPer10k = await getIncentiveRatePer10k(token.address, chainId, provider);
     const MFIUSDPrice: number = tokenUSDPrice?.data['marginswap'].usd || 0;
+
     const firstCal = Math.floor(
-      ((tokenUSDPrice.data[token.coingeckoId]?.usd || 0) * 10 ** token.decimals) / (MFIUSDPrice * 10 ** 18)
+      1000 * (MFIUSDPrice * ((10 ** 18) / (10 ** token.decimals)) / (tokenUSDPrice.data[token.coingeckoId]?.usd))
     );
-    const amount = tokenAPRPer10k.mul(firstCal);
+    const amount = tokenAPRPer10k.mul(firstCal).div(1000);
 
     return amount;
   });
