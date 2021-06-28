@@ -7,4 +7,7 @@
   "editor.tabSize": 2,
   "editor.insertSpaces": true,
   "eslint.alwaysShowStatus": true,
+  "cSpell.words": [
+    "marginswap"
+  ],
  }
