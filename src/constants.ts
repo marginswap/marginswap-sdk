@@ -43,7 +43,9 @@ export enum AMMs {
   PANGOLIN,
   BAGUETTE,
   SUSHI_ALT,
-  QUICKSWAP
+  QUICKSWAP,
+  PANCAKESWAP,
+  APESWAP
 }
 
 export const ammsPerChain = {
@@ -55,7 +57,8 @@ export const ammsPerChain = {
   [ChainId.ROPSTEN]: [AMMs.UNI, AMMs.SUSHI],
   [ChainId.RINKEBY]: [AMMs.UNI, AMMs.SUSHI],
   [ChainId.GÖRLI]: [AMMs.UNI, AMMs.SUSHI],
-  [ChainId.MATIC]: [AMMs.QUICKSWAP, AMMs.SUSHI_ALT]
+  [ChainId.MATIC]: [AMMs.QUICKSWAP, AMMs.SUSHI_ALT],
+  [ChainId.BSC]: [AMMs.PANCAKESWAP, AMMs.APESWAP]
 };
 
 export const ammOrder: Record<AMMs, number> = {
@@ -64,7 +67,9 @@ export const ammOrder: Record<AMMs, number> = {
   [AMMs.PANGOLIN]: 0,
   [AMMs.SUSHI_ALT]: 1,
   [AMMs.BAGUETTE]: 2,
-  [AMMs.QUICKSWAP]: 0
+  [AMMs.QUICKSWAP]: 0,
+  [AMMs.PANCAKESWAP]: 0,
+  [AMMs.APESWAP]: 1
 };
 
 export const factoryAddresses: Record<AMMs, string> = {
@@ -73,7 +78,9 @@ export const factoryAddresses: Record<AMMs, string> = {
   [AMMs.PANGOLIN]: '0xefa94DE7a4656D787667C749f7E1223D71E9FD88',
   [AMMs.BAGUETTE]: '0xBB6e8C136ca537874a6808dBFC5DaebEd9a57554',
   [AMMs.SUSHI_ALT]: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
-  [AMMs.QUICKSWAP]: '0x5757371414417b8C6CAad45bAeF941aBc7d3Ab32'
+  [AMMs.QUICKSWAP]: '0x5757371414417b8C6CAad45bAeF941aBc7d3Ab32',
+  [AMMs.PANCAKESWAP]: '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73',
+  [AMMs.APESWAP]: '0x0841BD0B734E4F5853f0dD8d7Ea041c241fb0Da6'
 };
 
 export const amms: Record<string, AMMs> = {
@@ -81,7 +88,9 @@ export const amms: Record<string, AMMs> = {
   [factoryAddresses[AMMs.SUSHI]]: AMMs.SUSHI,
   [factoryAddresses[AMMs.PANGOLIN]]: AMMs.PANGOLIN,
   [factoryAddresses[AMMs.BAGUETTE]]: AMMs.BAGUETTE,
-  [factoryAddresses[AMMs.SUSHI_ALT]]: AMMs.SUSHI_ALT
+  [factoryAddresses[AMMs.SUSHI_ALT]]: AMMs.SUSHI_ALT,
+  [factoryAddresses[AMMs.PANCAKESWAP]]: AMMs.PANCAKESWAP,
+  [factoryAddresses[AMMs.APESWAP]]: AMMs.APESWAP
 };
 
 export const initCodeHashes: Record<string, string> = {
@@ -90,7 +99,9 @@ export const initCodeHashes: Record<string, string> = {
   [factoryAddresses[AMMs.PANGOLIN]]: '0x40231f6b438bce0797c9ada29b718a87ea0a5cea3fe9a771abdd76bd41a3e545',
   [factoryAddresses[AMMs.BAGUETTE]]: '0x81dbf51ab39dc634785936a3b34def28bf8007e6dfa30d4284c4b8547cb47a51',
   [factoryAddresses[AMMs.SUSHI_ALT]]: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
-  [factoryAddresses[AMMs.QUICKSWAP]]: '0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f'
+  [factoryAddresses[AMMs.QUICKSWAP]]: '0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f',
+  [factoryAddresses[AMMs.PANCAKESWAP]]: '0x00fb7f630766e6a796048ea87d01acd3068e8ff67d078148a3fa3f4a84f69bd5',
+  [factoryAddresses[AMMs.APESWAP]]: '0xf4ccce374816856d11f00e4069e7cada164065686fbef53c6167a63ec2fd8c5b'
 };
 
 export const MINIMUM_LIQUIDITY = JSBI.BigInt(1000);
