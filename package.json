@@ -22,7 +22,7 @@
     "prepare": "tsdx build"
   },
   "dependencies": {
-    "@marginswap/core-abi": "^1.3.11",
+    "@marginswap/core-abi": "^1.3.12",
     "@uniswap/v2-core": "^1.0.0",
     "axios": "^0.21.1",
     "big.js": "^5.2.2",
