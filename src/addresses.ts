@@ -15,6 +15,7 @@ export type DeploymentAddresses = {
   SpotRouter: string;
   TokenActivation: string;
   TokenAdmin: string;
+  Staking: string;
 };
 
 const addresses: Record<string, DeploymentAddresses> = require('@marginswap/core-abi/addresses.json');
