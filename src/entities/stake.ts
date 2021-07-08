@@ -35,7 +35,10 @@ export function getLiquidityMiningReward(
 }
 
 export async function isMigrated(stakingContract: Contract, chainId: ChainId, provider: Provider, address: string): Promise<boolean> {
-  return await stakingContract.migrated(address) && (await getLegacyStaking(chainId, provider)!.stakeAccounts(address).stakeAmount).gt(`1${'0'.repeat(18)}`);
+  const legacy = await getLegacyStaking(chainId, provider);
+  const account = await legacy!.stakeAccounts(address);
+
+  return await stakingContract.migrated(address) && account.stakeAmount.gt(`1${'0'.repeat(18)}`);
 }
 
 export async function stake(
@@ -50,12 +53,11 @@ export async function withdrawStake(stakingContract: Contract, amount: string): 
 }
 
 export async function exitLegacyStake(
+  legacyStaking: Contract,
   address: string,
-  chainId: ChainId,
-  provider: Provider
 ): Promise<TransactionReceipt> {
-  const legacyStaking = getLegacyStaking(chainId, provider)!;
-  return legacyStaking.withdrawStake((await legacyStaking.stakeAccounts(address)).stakeAmount);
+  const stakeAccount = (await legacyStaking.stakeAccounts(address));
+  return legacyStaking.withdrawStake(stakeAccount.stakeAmount);
 }
 
 export async function canWithdraw(stakingContract: Contract, address: string): Promise<boolean> {
@@ -63,7 +65,7 @@ export async function canWithdraw(stakingContract: Contract, address: string): P
     (await stakingContract.stakeStart(address)).toNumber() + (await stakingContract.lockTime()).toNumber();
 
   const currentTime = Math.floor(Date.now() / 1000);
-  return currentTime >= lockEnd && ((await accruedReward(stakingContract, address))?.gt(0) ?? false);
+  return currentTime >= lockEnd;
 }
 
 export async function accruedReward(
