@@ -34,17 +34,21 @@ export function getLiquidityMiningReward(
   return new Contract(address, LiquidityMiningReward.abi, provider);
 }
 
-export async function isMigrated(stakingContract: Contract, chainId: ChainId, provider: Provider, address: string): Promise<boolean> {
+export async function isMigrated(
+  stakingContract: Contract,
+  chainId: ChainId,
+  provider: Provider,
+  address: string
+): Promise<boolean> {
   const legacy = await getLegacyStaking(chainId, provider);
   const account = await legacy!.stakeAccounts(address);
 
-  return await stakingContract.migrated(address) && account.stakeAmount.gt(`1${'0'.repeat(18)}`);
+  const balance = account.stakeAmount;
+
+  return (await stakingContract.migrated(address)) && balance.gt(`1${'0'.repeat(18)}`);
 }
 
-export async function stake(
-  stakingContract: Contract,
-  amount: string
-): Promise<TransactionReceipt> {
+export async function stake(stakingContract: Contract, amount: string): Promise<TransactionReceipt> {
   return stakingContract.stake(amount);
 }
 
@@ -52,11 +56,8 @@ export async function withdrawStake(stakingContract: Contract, amount: string): 
   return stakingContract.withdrawStake(amount);
 }
 
-export async function exitLegacyStake(
-  legacyStaking: Contract,
-  address: string,
-): Promise<TransactionReceipt> {
-  const stakeAccount = (await legacyStaking.stakeAccounts(address));
+export async function exitLegacyStake(legacyStaking: Contract, address: string): Promise<TransactionReceipt> {
+  const stakeAccount = await legacyStaking.stakeAccounts(address);
   return legacyStaking.withdrawStake(stakeAccount.stakeAmount);
 }
 
@@ -70,10 +71,15 @@ export async function canWithdraw(stakingContract: Contract, address: string): P
 
 export async function accruedReward(
   stakingContract: Contract | undefined,
+  legacy: Contract | undefined,
   address: string | undefined
 ): Promise<BigNumber | undefined> {
   if (!stakingContract || !address) return undefined;
-  return stakingContract.viewRewardAmount(address);
+  let reward = await stakingContract.viewRewardAmount(address);
+  if (legacy) {
+    reward = reward.add(await legacy.viewRewardAmount(address));
+  }
+  return reward;
 }
 
 export async function withdrawReward(stakingContract: Contract): Promise<TransactionReceipt> {
@@ -102,19 +108,17 @@ export async function getLiquidityAPRPerWeight(
   return rewardPerMFIStakedPerYear.toNumber() / (10000 / 100);
 }
 
-export async function getMFIAPRPerWeight(
-  stakingContract: Contract | undefined
-): Promise<number | undefined> {
+export async function getMFIAPRPerWeight(stakingContract: Contract | undefined): Promise<number | undefined> {
   if (!stakingContract) return undefined;
 
   const rewardRate = await stakingContract.rewardRate();
   const totalWeight = await stakingContract.totalSupply();
 
   return (
-    (rewardRate
+    rewardRate
       .mul(10000 * 367 * 24 * 60 * 60)
       .div(totalWeight.add(1))
-      .toNumber()) /
+      .toNumber() /
     (10000 / 100)
   );
 }
