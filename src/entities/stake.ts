@@ -77,7 +77,9 @@ export async function accruedReward(
   if (!stakingContract || !address) return undefined;
   let reward = await stakingContract.viewRewardAmount(address);
   if (legacy) {
-    reward = reward.add(await legacy.viewRewardAmount(address));
+    const totalReward = await legacy.viewUpdatedCumulativeReward();
+    const account = await stakingContract.legacyStakeAccounts(address);
+    reward = reward.add(totalReward.sub(account.cumulativeStart).mul(account.stakeWeight).div((await stakingContract.startingWeights()).add(1)));
   }
   return reward;
 }
