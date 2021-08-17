@@ -113,7 +113,11 @@ export async function totalLendingAvailable(
 ): Promise<TransactionReceipt> {
   const lending = getLending(chainId, provider);
   const { totalLending, totalBorrowed } = await lending.lendingMeta(tokenAddress);
-  return totalLending.sub(totalBorrowed);
+  if (totalLending.gt(totalBorrowed) {
+    return totalLending.sub(totalBorrowed);
+  } else {
+    return totalLending.sub(totalLending);
+  }
 }
 
 /**
