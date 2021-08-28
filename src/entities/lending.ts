@@ -174,9 +174,9 @@ export async function getHourlyBondIncentiveInterestRates(
     const tokenAPRPer10k = await getIncentiveRatePer10k(token.address, chainId, provider);
     const MFIUSDPrice: number = tokenUSDPrice?.data['marginswap'].usd || 0;
     const TokenUSDPrice = tokenUSDPrice.data[token.coingeckoId]?.usd || 0;
-    const conversionFactor = parseUnits(MFIUSDPrice.toString(), 18)
+    const conversionFactor = parseUnits(MFIUSDPrice.toString(), token.decimals)
       .mul(100000)
-      .div(parseUnits(TokenUSDPrice.toString(), token.decimals));
+      .div(parseUnits(TokenUSDPrice.toString(), 18));
 
     console.log(conversionFactor);
     let amount = tokenAPRPer10k.mul(conversionFactor).div(100000);
@@ -185,7 +185,7 @@ export async function getHourlyBondIncentiveInterestRates(
       amount.toNumber();
     } catch (error) {
       console.log(error);
-      amount = BigNumber.from('999999999');
+      amount = BigNumber.from('1');
     }
 
     return amount;
