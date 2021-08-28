@@ -10,6 +10,7 @@ import { getAddresses } from '../addresses';
 import { Balances } from './margin-account';
 import { BigNumber } from '@ethersproject/bignumber';
 import { getCoinUsdPrice, CoinGeckoReponseType } from '../utils';
+import { parseUnits } from "@ethersproject/units";
 
 function getLending(chainId: ChainId, provider: BaseProvider) {
   return new Contract(getAddresses(chainId).Lending, LendingCore.abi, provider);
@@ -172,12 +173,13 @@ export async function getHourlyBondIncentiveInterestRates(
     if (!token?.coingeckoId) return BigNumber.from(0);
     const tokenAPRPer10k = await getIncentiveRatePer10k(token.address, chainId, provider);
     const MFIUSDPrice: number = tokenUSDPrice?.data['marginswap'].usd || 0;
-    const conversionFactor = Math.floor(
-      (100000 * (MFIUSDPrice * 10 ** 18) / tokenUSDPrice.data[token.coingeckoId]?.usd * 10 ** token.decimals)
-    );
+    const TokenUSDPrice = tokenUSDPrice.data[token.coingeckoId]?.usd || 0;
+    const conversionFactor = parseUnits(MFIUSDPrice.toString(), 18)
+      .mul(100000)
+      .div(parseUnits(TokenUSDPrice.toString(), token.decimals));
 
     console.log(conversionFactor);
-    let amount = tokenAPRPer10k.mul(conversionFactor.toString()).div(100000);
+    let amount = tokenAPRPer10k.mul(conversionFactor).div(100000);
 
     try {
       amount.toNumber();
