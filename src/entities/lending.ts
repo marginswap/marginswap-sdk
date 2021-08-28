@@ -175,11 +175,11 @@ export async function getHourlyBondIncentiveInterestRates(
     const MFIUSDPrice: number = tokenUSDPrice?.data['marginswap'].usd || 0;
     const TokenUSDPrice = tokenUSDPrice.data[token.coingeckoId]?.usd || 0;
     const conversionFactor = parseUnits(MFIUSDPrice.toString(), token.decimals)
-      .mul(100000)
+      .mul(parseUnits('1', 16))
       .div(parseUnits(TokenUSDPrice.toString(), 18));
 
     console.log(conversionFactor);
-    let amount = tokenAPRPer10k.mul(conversionFactor).div(100000);
+    let amount = tokenAPRPer10k.mul(conversionFactor).div(parseUnits('1', 16));
 
     try {
       amount.toNumber();
