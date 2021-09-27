@@ -10,7 +10,7 @@ import { getAddresses } from '../addresses';
 import { Balances } from './margin-account';
 import { BigNumber } from '@ethersproject/bignumber';
 import { getCoinUsdPrice, CoinGeckoReponseType } from '../utils';
-import { parseUnits } from "@ethersproject/units";
+import { parseUnits } from '@ethersproject/units';
 
 function getLending(chainId: ChainId, provider: BaseProvider) {
   return new Contract(getAddresses(chainId).Lending, LendingCore.abi, provider);

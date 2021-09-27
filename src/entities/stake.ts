@@ -79,7 +79,12 @@ export async function accruedReward(
   if (legacy) {
     const totalReward = await legacy.viewUpdatedCumulativeReward();
     const account = await stakingContract.legacyStakeAccounts(address);
-    reward = reward.add(totalReward.sub(account.cumulativeStart).mul(account.stakeWeight).div((await stakingContract.startingWeights()).add(1)));
+    reward = reward.add(
+      totalReward
+        .sub(account.cumulativeStart)
+        .mul(account.stakeWeight)
+        .div((await stakingContract.startingWeights()).add(1))
+    );
   }
   return reward;
 }
