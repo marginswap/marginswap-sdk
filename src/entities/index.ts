@@ -8,3 +8,4 @@ export * from './fractions';
 export * from './lending';
 export * from './IERC20Token';
 export * from './stake';
+export * from './orders';
