@@ -9,10 +9,11 @@ export async function makeOrder(
   inAmount: string,
   outAmount: string,
   chainId: ChainId,
-  provider: Provider
+  provider: Provider,
+  expiration?: string
 ): Promise<TransactionReceipt> {
   const marginRouter = getMarginRouterContract(chainId, provider);
-  return await marginRouter.makeOrder(fromToken, toToken, inAmount, outAmount);
+  return await marginRouter.makeOrder(fromToken, toToken, inAmount, outAmount, expiration ?? '0');
 }
 
 export async function invalidateOrder(
