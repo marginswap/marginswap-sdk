@@ -1,7 +1,7 @@
 {
   "name": "@marginswap/sdk",
   "license": "MIT",
-  "version": "4.5.1",
+  "version": "4.5.2",
   "description": "🛠 An SDK for building applications on top of marginswap.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -22,7 +22,7 @@
     "prepare": "tsdx build"
   },
   "dependencies": {
-    "@marginswap/core-abi": "^1.5.0",
+    "@marginswap/core-abi": "^1.5.1",
     "@uniswap/v2-core": "^1.0.0",
     "axios": "^0.21.1",
     "big.js": "^5.2.2",
