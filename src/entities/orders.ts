@@ -34,3 +34,21 @@ export async function takeOrder(
   const marginRouter = getMarginRouterContract(chainId, provider);
   return await marginRouter.takeOrder(orderId, maxInAmount);
 }
+
+export type OrderRecord = {
+  fromToken: string;
+  toToken: string;
+  inAmount: BigNumber;
+  outAmount: BigNumber;
+  maker: string;
+  expiration: BigNumber;
+};
+
+export async function getOrdersPerUser(
+  userAddress: string,
+  chainId: ChainId,
+  provider: Provider
+): Promise<OrderRecord[]> {
+  const marginRouter = getMarginRouterContract(chainId, provider);
+  return await marginRouter.getPendingOrderRecordsPerUser(userAddress);
+}
