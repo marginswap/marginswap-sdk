@@ -48,7 +48,9 @@ export async function getOrdersPerUser(
   userAddress: string,
   chainId: ChainId,
   provider: Provider
-): Promise<OrderRecord[]> {
+): Promise<Record<number, OrderRecord>> {
   const marginRouter = getMarginRouterContract(chainId, provider);
-  return await marginRouter.getPendingOrderRecordsPerUser(userAddress);
+  const ids = await marginRouter.getPendingOrderPerUser(userAddress);
+  const records = await marginRouter.getPendingOrderRecordsPerUser(userAddress);
+  return { ...ids.map((id: BigNumber, i: number) => [id.toNumber(), records[i]]) };
 }
