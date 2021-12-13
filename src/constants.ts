@@ -28,7 +28,8 @@ export enum TradeType {
 export enum LeverageType {
   SPOT,
   CROSS_MARGIN,
-  ISOLATED_MARGIN
+  ISOLATED_MARGIN,
+  LIMIT_ORDER
 }
 
 export enum Rounding {
